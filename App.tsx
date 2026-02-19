@@ -1,9 +1,14 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import NeuralBrain from './components/NeuralBrain.tsx';
 import SectionWrapper from './components/SectionWrapper.tsx';
 import { analyzeBottlenecks } from './services/geminiService.ts';
 import { LeadFormData, AnalysisResponse } from './types.ts';
+
+declare global {
+  interface Window {
+    Calendly: any;
+  }
+}
 
 const App: React.FC = () => {
   const [formData, setFormData] = useState<LeadFormData>({
@@ -17,18 +22,59 @@ const App: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isBooked, setIsBooked] = useState(false);
 
+  // The 15-minute event URL as specified
+  const BASE_CALENDLY_URL = 'https://calendly.com/marton-hyzalabs/15min';
+
+  const triggerCalendly = () => {
+    /**
+     * PRECISION CALENDLY MAPPING FOR ALL 4 FIELDS:
+     * 1. name: Pre-fills the 'Name' field.
+     * 2. email: Pre-fills the 'Email' field.
+     * 3. phone_number: Pre-fills the native Calendly phone field.
+     * 4. a1: Pre-fills the "Share anything that will help prepare for our meeting" section.
+     * 
+     * NOTE: We use encodeURIComponent and strictly replace '+' with '%20' for 
+     * maximum compatibility across all browsers and Calendly's internal parser.
+     */
+    
+    const safeEncode = (str: string) => encodeURIComponent(str.trim()).replace(/\+/g, '%20');
+
+    const nameVal = safeEncode(formData.fullName);
+    const emailVal = safeEncode(formData.email);
+    const phoneVal = safeEncode(formData.phone);
+    const bottlenecksVal = safeEncode(formData.bottlenecks);
+
+    // Constructing the final URL with the 4 key data points
+    const queryString = `name=${nameVal}&email=${emailVal}&phone_number=${phoneVal}&a1=${bottlenecksVal}`;
+    const finalUrl = `${BASE_CALENDLY_URL}?${queryString}`;
+
+    if (window.Calendly) {
+      window.Calendly.showPopupWidget(finalUrl);
+      setIsBooked(true);
+    } else {
+      // Fallback for direct links
+      window.open(finalUrl, '_blank');
+      setIsBooked(true);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    const result = await analyzeBottlenecks(formData);
-    setAnalysis(result);
-    setIsSubmitting(false);
-  };
-
-  const handleBookingRedirect = () => {
-    // Redirects to strategy calendar as a next step
-    window.open('https://calendly.com/hyzalabs-strategy/session', '_blank');
-    setIsBooked(true);
+    
+    try {
+      const result = await analyzeBottlenecks(formData);
+      setAnalysis(result);
+      setIsSubmitting(false);
+      
+      // Delay to ensure the user sees the generated report before the calendar pops up
+      setTimeout(() => {
+        triggerCalendly();
+      }, 1000);
+    } catch (error) {
+      console.error("Submission error", error);
+      setIsSubmitting(false);
+    }
   };
 
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
@@ -340,12 +386,12 @@ const App: React.FC = () => {
                   
                   <div className="text-center space-y-4">
                     <h4 className="text-xl font-bold">Analysis Complete.</h4>
-                    <p className="text-white/40 text-sm">Based on your report, we recommend immediate technical auditing.</p>
+                    <p className="text-white/40 text-sm italic">Directing you to the strategy calendar...</p>
                     <button 
-                      onClick={handleBookingRedirect}
-                      className="w-full py-4 bg-white text-black font-bold rounded-lg hover:bg-white/90 transition-all flex items-center justify-center gap-2"
+                      onClick={triggerCalendly}
+                      className="w-full py-4 bg-white text-black font-bold rounded-lg hover:bg-white/90 transition-all flex items-center justify-center gap-2 shadow-xl shadow-white/5"
                     >
-                      {isBooked ? "Booking Page Opened" : "Access Strategy Calendar"}
+                      {isBooked ? "Calendar Opened" : "Open Strategy Calendar"}
                     </button>
                     <button 
                       onClick={() => setAnalysis(null)}
