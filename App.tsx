@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import NeuralBrain from './components/NeuralBrain.tsx';
 import SectionWrapper from './components/SectionWrapper.tsx';
+import BackgroundParticles from './components/BackgroundParticles.tsx';
 import { analyzeBottlenecks } from './services/geminiService.ts';
 import { LeadFormData, AnalysisResponse } from './types.ts';
 
@@ -21,38 +22,39 @@ const App: React.FC = () => {
   const [analysis, setAnalysis] = useState<AnalysisResponse | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isBooked, setIsBooked] = useState(false);
+  const [showCookieNotice, setShowCookieNotice] = useState(false);
+  const [activeModal, setActiveModal] = useState<'privacy' | 'disclaimer' | null>(null);
 
-  // The 15-minute event URL as specified
+  useEffect(() => {
+    const hasConsented = localStorage.getItem('cookieConsent');
+    if (!hasConsented) {
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      if (timezone.includes('Europe')) {
+        setShowCookieNotice(true);
+      } else {
+        setShowCookieNotice(true);
+      }
+    }
+  }, []);
+
+  const handleCookieConsent = () => {
+    localStorage.setItem('cookieConsent', 'true');
+    setShowCookieNotice(false);
+  };
+
   const BASE_CALENDLY_URL = 'https://calendly.com/marton-hyzalabs/15min';
 
   const triggerCalendly = () => {
-    /**
-     * PRECISION CALENDLY MAPPING FOR ALL 4 FIELDS:
-     * 1. name: Pre-fills the 'Name' field.
-     * 2. email: Pre-fills the 'Email' field.
-     * 3. phone_number: Pre-fills the native Calendly phone field.
-     * 4. a1: Pre-fills the "Share anything that will help prepare for our meeting" section.
-     * 
-     * NOTE: We use encodeURIComponent and strictly replace '+' with '%20' for 
-     * maximum compatibility across all browsers and Calendly's internal parser.
-     */
-    
     const safeEncode = (str: string) => encodeURIComponent(str.trim()).replace(/\+/g, '%20');
-
-    const nameVal = safeEncode(formData.fullName);
-    const emailVal = safeEncode(formData.email);
-    const phoneVal = safeEncode(formData.phone);
-    const bottlenecksVal = safeEncode(formData.bottlenecks);
-
-    // Constructing the final URL with the 4 key data points
-    const queryString = `name=${nameVal}&email=${emailVal}&phone_number=${phoneVal}&a1=${bottlenecksVal}`;
+    // Using 'a2' instead of 'a1' as 'a1' was hitting the phone field.
+    // This targets the "Please share anything that will help prepare..." section below phone.
+    const queryString = `name=${safeEncode(formData.fullName)}&email=${safeEncode(formData.email)}&a2=${safeEncode(formData.bottlenecks)}`;
     const finalUrl = `${BASE_CALENDLY_URL}?${queryString}`;
 
     if (window.Calendly) {
       window.Calendly.showPopupWidget(finalUrl);
       setIsBooked(true);
     } else {
-      // Fallback for direct links
       window.open(finalUrl, '_blank');
       setIsBooked(true);
     }
@@ -61,24 +63,19 @@ const App: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
     try {
       const result = await analyzeBottlenecks(formData);
       setAnalysis(result);
       setIsSubmitting(false);
-      
-      // Delay to ensure the user sees the generated report before the calendar pops up
-      setTimeout(() => {
-        triggerCalendly();
-      }, 1000);
+      setTimeout(() => triggerCalendly(), 1000);
     } catch (error) {
       console.error("Submission error", error);
       setIsSubmitting(false);
     }
   };
 
-  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
-    e.preventDefault();
+  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>, id: string) => {
+    if (e) e.preventDefault();
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -86,98 +83,138 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white selection:bg-indigo-500/30 overflow-hidden font-inter">
-      {/* Background Neural Glows */}
-      <div className="fixed top-0 left-0 w-full h-full pointer-events-none -z-10">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-900/10 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[10%] right-[-5%] w-[35%] h-[35%] bg-purple-900/10 rounded-full blur-[120px]" />
-        <div className="absolute top-[40%] left-[30%] w-[20%] h-[20%] bg-indigo-600/5 rounded-full blur-[100px]" />
+    <div className="min-h-screen bg-black text-white selection:bg-indigo-500/30 overflow-hidden font-inter relative">
+      <BackgroundParticles />
+      
+      {/* Deep Atmosphere */}
+      <div className="fixed top-0 left-0 w-full h-full pointer-events-none -z-20">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.08)_0%,transparent_70%)]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-purple-900/5 rounded-full blur-[140px] animate-pulse" />
       </div>
 
       {/* Header */}
-      <header className="fixed top-0 w-full z-50 border-b border-white/5 bg-black/60 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <header className="fixed top-0 w-full z-50 border-b border-white/5 bg-black/80 backdrop-blur-xl">
+        <div className="max-w-7xl mx-auto px-6 h-16 md:h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <NeuralBrain className="w-8 h-8" />
-            <span className="text-xl font-bold tracking-tight">HyzaLabs</span>
+            <NeuralBrain className="w-8 h-8 md:w-10 md:h-10" />
+            <span className="text-xl md:text-2xl font-black tracking-tighter italic uppercase text-white">HyzaLabs</span>
           </div>
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-white/60">
-            <a href="#gaps" onClick={(e) => scrollToSection(e, 'gaps')} className="hover:text-white transition-colors">Inefficiencies</a>
-            <a href="#solutions" onClick={(e) => scrollToSection(e, 'solutions')} className="hover:text-white transition-colors">Our Solutions</a>
-            <a href="#partnership" onClick={(e) => scrollToSection(e, 'partnership')} className="hover:text-white transition-colors">Onboarding</a>
-            <a href="#strategy" onClick={(e) => scrollToSection(e, 'strategy')} className="px-5 py-2.5 bg-white text-black rounded-full hover:bg-white/90 transition-all font-semibold">Strategy Session</a>
-          </nav>
+          <div className="flex items-center gap-8">
+            <nav className="hidden lg:flex items-center gap-8 text-[10px] font-black uppercase tracking-widest text-white/40">
+              <a href="#gaps" onClick={(e) => scrollToSection(e, 'gaps')} className="hover:text-white transition-all">Inefficiencies</a>
+              <a href="#solutions" onClick={(e) => scrollToSection(e, 'solutions')} className="hover:text-white transition-all">Solutions</a>
+            </nav>
+            <button 
+              onClick={(e) => scrollToSection(e, 'strategy')}
+              className="px-6 py-2.5 bg-white/5 border border-white/10 text-white rounded-full hover:bg-white hover:text-black transition-all duration-300 text-[10px] font-black uppercase tracking-widest"
+            >
+              Get Started
+            </button>
+          </div>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <SectionWrapper id="hero" className="pt-48 pb-20 px-6 text-center">
-        <div className="max-w-4xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-semibold text-indigo-400 mb-8 uppercase tracking-widest">
-            Strategic Fitness Infrastructure
+      {/* Hero */}
+      <SectionWrapper id="hero" className="pt-40 md:pt-56 pb-20 md:pb-32 px-6 text-center">
+        <div className="max-w-5xl mx-auto relative z-10 flex flex-col items-center">
+          
+          {/* Central Nexus Visual */}
+          <div className="mb-12 relative">
+             <div className="absolute inset-0 bg-indigo-500/20 blur-[60px] rounded-full animate-pulse" />
+             <NeuralBrain className="w-32 h-32 md:w-48 md:h-48 relative" glowing />
           </div>
-          <h1 className="text-5xl md:text-8xl font-bold tracking-tight mb-8 leading-[1.1]">
-            Build Once. <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400 italic">Scaled Automatically.</span>
+
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-indigo-500/20 bg-indigo-500/10 text-[10px] font-bold text-indigo-300 mb-10 uppercase tracking-[0.3em]">
+            Autonomous Enterprise Operating Systems
+          </div>
+          
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-8 leading-[0.9] text-white">
+            Build Once. <br/>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-purple-400 to-indigo-500">Scale Automatically.</span>
           </h1>
-          <p className="text-lg md:text-xl text-white/50 max-w-2xl mx-auto mb-12 font-light leading-relaxed">
-            HyzaLabs builds custom AI systems and automation infrastructure designed around your specific operational bottlenecks.
+          
+          <p className="text-base md:text-xl text-white/50 max-w-2xl mx-auto mb-14 font-light leading-relaxed tracking-wide">
+            The next generation of high-fidelity AI infrastructure for the fitness elite. <br className="hidden md:block"/> Engineered to eliminate manual friction and maximize revenue capture.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a href="#strategy" onClick={(e) => scrollToSection(e, 'strategy')} className="px-8 py-4 bg-white text-black font-semibold rounded-lg hover:scale-[1.02] active:scale-[0.98] transition-all">
-              Request a Strategy Session
-            </a>
-            <a href="#gaps" onClick={(e) => scrollToSection(e, 'gaps')} className="px-8 py-4 bg-white/5 border border-white/10 text-white font-semibold rounded-lg hover:bg-white/10 transition-all">
-              Explore Our Approach
-            </a>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 w-full sm:w-auto">
+            <button 
+              onClick={(e) => scrollToSection(e, 'strategy')}
+              className="w-full sm:w-auto px-12 py-5 bg-white text-black font-black uppercase text-[11px] tracking-[0.2em] rounded-full hover:bg-indigo-400 hover:text-white hover:scale-105 hover:-translate-y-1 transition-all duration-500 shadow-2xl shadow-indigo-500/10"
+            >
+              Request Engineering Audit
+            </button>
+            <button 
+              onClick={(e) => scrollToSection(e, 'gaps')}
+              className="w-full sm:w-auto px-12 py-5 bg-white/5 border border-white/10 text-white font-black uppercase text-[11px] tracking-[0.2em] rounded-full hover:bg-white/10 hover:border-white/30 hover:scale-105 transition-all duration-500"
+            >
+              Explore the Stack
+            </button>
           </div>
         </div>
       </SectionWrapper>
 
       {/* Gaps Section */}
-      <SectionWrapper id="gaps" className="py-32 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-20 items-center">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">The Hidden Operational Gaps in Modern Gyms</h2>
-              <p className="text-white/50 text-lg mb-8 font-light">
-                Standard software works for everyone, which means it doesn't truly optimize for anyone. We identify the friction points you've learned to tolerate.
-              </p>
-              <ul className="space-y-6">
+      <SectionWrapper id="gaps" className="py-24 md:py-48 px-6 bg-[#030303]">
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="grid lg:grid-cols-2 gap-20 md:gap-32 items-center">
+            <div className="order-2 lg:order-1 text-left">
+              <h2 className="text-4xl md:text-6xl font-black tracking-tighter italic leading-[0.9] mb-8 text-white">Friction Analysis.</h2>
+              <p className="text-white/40 text-lg md:text-xl font-light mb-10 leading-relaxed">Most systems are siloed. We architect a unified neural circuit that captures every lead, recovers every payment, and automates every touchpoint.</p>
+              
+              <div className="space-y-10">
                 {[
-                  { title: "Failed Payment Leakage", desc: "Automated recovery sequences that actually understand member intent." },
-                  { title: "Churn Blind Spots", desc: "Predictive intelligence identifying at-risk members before they cancel." },
-                  { title: "Manual Admin Overload", desc: "Offloading low-value repetitive tasks to intelligent neural agents." },
-                  { title: "Underutilized Data", desc: "Turning your raw member data into actionable strategic insights." }
+                  { title: "Revenue Recovery", desc: "Automated sequences that utilize AI to handle failed billing with member empathy." },
+                  { title: "Predictive Intelligence", desc: "Identifying member churn signals before they result in a cancellation." },
+                  { title: "Admin Offloading", desc: "Transitioning high-friction manual tasks to intelligent autonomous agents." }
                 ].map((item, idx) => (
-                  <li key={idx} className="flex gap-4 group">
-                    <div className="w-6 h-6 rounded-full border border-indigo-500/50 flex-shrink-0 mt-1 flex items-center justify-center group-hover:bg-indigo-500 transition-all">
-                      <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full group-hover:bg-white" />
+                  <div key={idx} className="flex gap-6 group">
+                    <div className="w-12 h-12 rounded-2xl border border-indigo-500/20 flex-shrink-0 flex items-center justify-center group-hover:bg-indigo-500/10 group-hover:border-indigo-500 transition-all duration-500">
+                      <div className="w-2 h-2 bg-indigo-400 rounded-full group-hover:scale-150 transition-transform" />
                     </div>
                     <div>
-                      <h4 className="font-semibold mb-1">{item.title}</h4>
-                      <p className="text-sm text-white/40">{item.desc}</p>
+                      <h4 className="font-bold text-lg md:text-xl mb-2 text-white group-hover:text-indigo-300 transition-colors tracking-tight">{item.title}</h4>
+                      <p className="text-sm text-white/30 font-light leading-relaxed">{item.desc}</p>
                     </div>
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              </div>
+              <div className="mt-12">
+                 <button 
+                    onClick={(e) => scrollToSection(e, 'strategy')}
+                    className="px-10 py-4 bg-indigo-600/10 border border-indigo-500/30 text-indigo-400 hover:bg-indigo-600 hover:text-white transition-all rounded-full text-[10px] font-black uppercase tracking-[0.2em]"
+                  >
+                    Fix My Bottlenecks
+                  </button>
+              </div>
             </div>
-            <div className="relative">
-              <div className="absolute inset-0 bg-indigo-500/20 blur-[100px] rounded-full" />
-              <div className="relative border border-white/10 bg-white/5 p-8 rounded-2xl backdrop-blur-sm">
-                <div className="space-y-4">
-                  <div className="h-2 w-2/3 bg-white/10 rounded" />
-                  <div className="h-2 w-full bg-white/10 rounded" />
-                  <div className="h-2 w-1/2 bg-indigo-500/40 rounded" />
-                  <div className="h-2 w-5/6 bg-white/10 rounded" />
-                  <div className="grid grid-cols-2 gap-4 mt-8">
-                    <div className="h-24 rounded-lg bg-white/5 border border-white/5 flex flex-col items-center justify-center">
-                      <span className="text-2xl font-bold text-indigo-400">14%</span>
-                      <span className="text-[10px] text-white/30 uppercase tracking-widest">Avg. Rev Leakage</span>
+
+            <div className="order-1 lg:order-2 relative">
+              <div className="absolute inset-0 bg-indigo-500/5 blur-[100px] rounded-full" />
+              <div className="relative border border-white/5 bg-white/[0.02] p-10 md:p-14 rounded-[3rem] backdrop-blur-3xl shadow-2xl">
+                <div className="space-y-8">
+                  <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-[0.4em] text-indigo-400">
+                    <span className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse" />
+                      Live Network Health
+                    </span>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="p-8 bg-white/[0.03] border border-white/5 rounded-3xl text-center group hover:bg-white/[0.05] transition-colors">
+                      <span className="text-4xl md:text-5xl font-black text-indigo-300 block tracking-tighter mb-2 group-hover:scale-110 transition-transform">14%</span>
+                      <span className="text-[9px] text-white/20 uppercase font-black tracking-widest">Average Revenue Leakage</span>
                     </div>
-                    <div className="h-24 rounded-lg bg-white/5 border border-white/5 flex flex-col items-center justify-center">
-                      <span className="text-2xl font-bold text-purple-400">30h+</span>
-                      <span className="text-[10px] text-white/30 uppercase tracking-widest">Weekly Manual Ops</span>
+                    <div className="p-8 bg-white/[0.03] border border-white/5 rounded-3xl text-center group hover:bg-white/[0.05] transition-colors">
+                      <span className="text-4xl md:text-5xl font-black text-purple-400 block tracking-tighter mb-2 group-hover:scale-110 transition-transform">30h+</span>
+                      <span className="text-[9px] text-white/20 uppercase font-black tracking-widest">Weekly Manual Ops</span>
                     </div>
+                  </div>
+
+                  <div className="pt-8 border-t border-white/5">
+                     <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 w-[65%] animate-[shimmer_3s_infinite]" />
+                     </div>
                   </div>
                 </div>
               </div>
@@ -186,245 +223,199 @@ const App: React.FC = () => {
         </div>
       </SectionWrapper>
 
-      {/* Solutions Section */}
-      <SectionWrapper id="solutions" className="py-32 bg-zinc-950/50 border-y border-white/5">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-20">
-            <h2 className="text-3xl md:text-5xl font-bold mb-6 italic">What We Actually Build</h2>
-            <p className="text-white/40 max-w-xl mx-auto">We don't sell software licenses. We build custom-engineered solutions that integrate with your existing tech stack.</p>
+      {/* Solutions */}
+      <SectionWrapper id="solutions" className="py-24 md:py-48 bg-black border-y border-white/5">
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="mb-20 text-center max-w-3xl mx-auto">
+            <h2 className="text-4xl md:text-7xl font-black tracking-tighter italic text-white mb-6">Built Assets.</h2>
+            <p className="text-white/40 text-lg font-light leading-relaxed">We don't rent you software. We build engineering assets that become permanent equity in your business model.</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { title: "Custom AI Workflows", desc: "Intelligent agents that handle inquiries, lead qualifying, and member follow-ups with human-like nuance." },
-              { title: "Automation Systems", desc: "Cross-platform bridges that sync your CRM, billing, and access control without human intervention." },
-              { title: "Intelligence Dashboards", desc: "Real-time visibility into operational health, LTV metrics, and performance forecast models." },
-              { title: "Process Optimization", desc: "Mapping your business logic into code to ensure every lead is handled with perfection." },
-              { title: "Neural Support Agents", desc: "24/7 intelligent member support that handles 80% of routine technical or account questions." },
-              { title: "Infrastructure Scaling", desc: "Systems that allow you to double your member count without doubling your administrative staff." }
+              { title: "AI Workflows", desc: "Qualify every lead and handle every inquiry 24/7 with human-level nuance and zero latency." },
+              { title: "Bridge Infrastructure", desc: "Custom-built API layers that unify your CRM, billing, and access control into a single source of truth." },
+              { title: "Telemetry Hubs", desc: "Enterprise-grade dashboards providing real-time operational visibility and predictive forecasting." }
             ].map((sol, idx) => (
-              <div key={idx} className="p-8 rounded-2xl bg-white/5 border border-white/10 hover:border-white/20 hover:translate-y-[-4px] transition-all">
-                <div className="w-10 h-10 rounded-lg bg-indigo-900/30 flex items-center justify-center mb-6">
-                  <div className="w-2 h-2 bg-indigo-500 rounded-full" />
+              <div key={idx} className="p-10 rounded-[2.5rem] bg-white/[0.02] border border-white/5 hover:border-indigo-500/30 hover:bg-white/[0.05] transition-all duration-700 group text-left">
+                <div className="w-12 h-12 rounded-2xl bg-indigo-500/5 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                   <div className="w-2.5 h-2.5 bg-indigo-500 rounded-full" />
                 </div>
-                <h3 className="text-xl font-bold mb-4">{sol.title}</h3>
-                <p className="text-white/40 text-sm leading-relaxed">{sol.desc}</p>
+                <h3 className="text-2xl font-bold mb-5 tracking-tight uppercase text-white group-hover:text-indigo-300 transition-colors">{sol.title}</h3>
+                <p className="text-white/30 text-sm leading-relaxed font-light mb-8">{sol.desc}</p>
+                <button 
+                  onClick={(e) => scrollToSection(e, 'strategy')}
+                  className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 hover:text-white transition-colors"
+                >
+                  View Blueprint +
+                </button>
               </div>
             ))}
           </div>
-        </div>
-      </SectionWrapper>
-
-      {/* Comparison Section */}
-      <SectionWrapper id="comparison" className="py-32 px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-12">Why Generic Software Falls Short</h2>
-          <div className="grid md:grid-cols-2 gap-12 text-left">
-            <div className="p-8 bg-zinc-900/30 rounded-2xl">
-              <h4 className="text-indigo-400 font-bold mb-4">SaaS Platforms</h4>
-              <ul className="space-y-4 text-sm text-white/50">
-                <li>• Rigid features you can't change</li>
-                <li>• High monthly fees per user/member</li>
-                <li>• Siloed data that doesn't talk to other tools</li>
-                <li>• Generic support that doesn't know your gym</li>
-              </ul>
-            </div>
-            <div className="p-8 bg-indigo-900/10 rounded-2xl border border-indigo-500/20">
-              <h4 className="text-indigo-400 font-bold mb-4">HyzaLabs Custom Infrastructure</h4>
-              <ul className="space-y-4 text-sm text-white/90">
-                <li>• 100% tailored to your specific logic</li>
-                <li>• One-time build or partner model</li>
-                <li>• Deep integration with your existing stack</li>
-                <li>• Dedicated strategic engineering support</li>
-              </ul>
-            </div>
+          <div className="mt-20 text-center">
+            <button 
+              onClick={(e) => scrollToSection(e, 'strategy')}
+              className="px-12 py-5 bg-white text-black font-black uppercase text-[11px] tracking-[0.3em] rounded-full hover:bg-indigo-500 hover:text-white transition-all duration-500"
+            >
+              Build My System
+            </button>
           </div>
         </div>
       </SectionWrapper>
 
-      {/* Partnership Section */}
-      <SectionWrapper id="partnership" className="py-32 px-6">
-        <div className="max-w-4xl mx-auto rounded-3xl bg-gradient-to-br from-indigo-900/20 to-purple-900/20 p-12 text-center border border-white/10">
-          <h2 className="text-3xl font-bold mb-6">Early Partner Invitation</h2>
-          <p className="text-white/60 mb-8 leading-relaxed">
-            We are not a mass-market software vendor. We only take on 2 new fitness partners per month to ensure deep strategic integration and flawless engineering. This is a selective onboarding process designed for gym owners ready for mature infrastructure.
-          </p>
-          <div className="flex justify-center gap-8 text-sm font-medium uppercase tracking-widest text-indigo-400">
-            <div className="flex flex-col">
-              <span className="text-3xl text-white font-bold">1/2</span>
-              <span>Available Slots</span>
-            </div>
-            <div className="w-px bg-white/10" />
-            <div className="flex flex-col">
-              <span className="text-3xl text-white font-bold">14d</span>
-              <span>Avg. Setup Time</span>
-            </div>
-          </div>
-        </div>
-      </SectionWrapper>
-
-      {/* Strategy Session & Lead Form */}
-      <SectionWrapper id="strategy" className="py-32 px-6 bg-zinc-950/80">
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16">
-          <div>
-            <h2 className="text-4xl font-bold mb-8 italic">Secure Your Strategy Session.</h2>
-            <p className="text-white/50 mb-12">
-              Tell us about your current bottlenecks. If there is a strategic fit, we will schedule a deep-dive call to map out your custom infrastructure.
-            </p>
-            
-            <div className="p-6 bg-white/5 border border-white/5 rounded-2xl mb-8">
-              <h4 className="text-sm font-bold text-white/30 uppercase tracking-widest mb-4">Typical Partner Profile</h4>
-              <ul className="space-y-3 text-sm">
-                <li className="flex gap-2"><span>✔</span> 150+ active members</li>
-                <li className="flex gap-2"><span>✔</span> Existing CRM/Billing in place</li>
-                <li className="flex gap-2"><span>✔</span> Ready to automate manual friction</li>
-              </ul>
-            </div>
-
-            <div className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 p-8 rounded-2xl border border-white/5">
-              <h4 className="font-bold mb-2">Our Workflow</h4>
-              <p className="text-sm text-white/40 leading-relaxed">
-                Once you submit your assessment, our neural engine analyzes the data and provides immediate strategic insights. The next step is a 1-on-1 engineering audit to map your future stack.
+      {/* Form Section */}
+      <SectionWrapper id="strategy" className="py-24 md:py-48 px-6 bg-[#020202]">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 md:gap-32 items-center relative z-10">
+          <div className="text-left">
+            <h2 className="text-4xl md:text-7xl font-black mb-10 tracking-tighter italic text-white leading-[0.9]">Initiate Audit.</h2>
+            <p className="text-white/40 mb-12 text-lg font-light leading-relaxed">Submit your operational constraints. If there is a strategic alignment, we will invite you to a 1-on-1 engineering deep-dive.</p>
+            <div className="p-10 rounded-[2.5rem] bg-gradient-to-br from-indigo-900/10 to-transparent border border-indigo-500/10 shadow-2xl">
+              <p className="italic text-sm md:text-base text-indigo-200/50 leading-loose">
+                "We don't optimize for software features. We optimize for your bottom line. Mature infrastructure is the only way to scale vertically without adding headcount."
               </p>
             </div>
           </div>
 
-          <div className="relative">
-            <div className="bg-white/5 p-8 md:p-12 rounded-3xl border border-white/10 backdrop-blur-sm">
-              <h3 className="text-2xl font-bold mb-8">Bottleneck Assessment</h3>
-              {!analysis ? (
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label className="text-xs font-semibold uppercase text-white/40 tracking-wider">Full Name</label>
-                      <input 
-                        type="text" 
-                        required
-                        placeholder="e.g. Alex Rivera"
-                        className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-indigo-500 transition-all outline-none"
-                        value={formData.fullName}
-                        onChange={e => setFormData({...formData, fullName: e.target.value})}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-xs font-semibold uppercase text-white/40 tracking-wider">Email Address</label>
-                      <input 
-                        type="email" 
-                        required
-                        placeholder="alex@fitnesshub.com"
-                        className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-indigo-500 transition-all outline-none"
-                        value={formData.email}
-                        onChange={e => setFormData({...formData, email: e.target.value})}
-                      />
-                    </div>
+          <div className="bg-[#080808] p-10 md:p-16 rounded-[3rem] border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.8)] relative overflow-hidden">
+            <div className="absolute -top-24 -right-24 w-64 h-64 bg-indigo-500/5 blur-[100px] rounded-full" />
+            <h3 className="text-3xl font-bold mb-10 tracking-tight text-white text-left">System Assessment</h3>
+            {!analysis ? (
+              <form onSubmit={handleSubmit} className="space-y-8 relative z-10 text-left">
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase text-white/20 tracking-widest">Principal Name</label>
+                    <input type="text" required placeholder="Alex Rivera" className="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 text-sm text-white focus:border-indigo-500 outline-none transition-all" value={formData.fullName} onChange={e => setFormData({...formData, fullName: e.target.value})} />
                   </div>
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label className="text-xs font-semibold uppercase text-white/40 tracking-wider">Phone Number</label>
-                      <input 
-                        type="tel" 
-                        required
-                        placeholder="+1 (555) 000-0000"
-                        className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-indigo-500 transition-all outline-none"
-                        value={formData.phone}
-                        onChange={e => setFormData({...formData, phone: e.target.value})}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-xs font-semibold uppercase text-white/40 tracking-wider">Monthly Budget Range</label>
-                      <select 
-                        required
-                        className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-indigo-500 transition-all outline-none appearance-none"
-                        value={formData.budget}
-                        onChange={e => setFormData({...formData, budget: e.target.value})}
-                      >
-                        <option value="">Select range...</option>
-                        <option value="$1k - $3k">$1,000 - $3,000 /mo</option>
-                        <option value="$3k - $10k">$3,000 - $10,000 /mo</option>
-                        <option value="$10k+">$10,000+ /mo</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-xs font-semibold uppercase text-white/40 tracking-wider">Main Business Bottlenecks</label>
-                    <textarea 
-                      rows={4}
-                      required
-                      placeholder="Where is your team spending most of their manual time?"
-                      className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-indigo-500 transition-all outline-none resize-none"
-                      value={formData.bottlenecks}
-                      onChange={e => setFormData({...formData, bottlenecks: e.target.value})}
-                    />
-                  </div>
-                  <button 
-                    type="submit" 
-                    disabled={isSubmitting}
-                    className="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-lg transition-all disabled:opacity-50"
-                  >
-                    {isSubmitting ? "Engine Analyzing..." : "Generate Neural Insight Report"}
-                  </button>
-                </form>
-              ) : (
-                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-                  <div className="p-6 bg-indigo-900/20 border border-indigo-500/30 rounded-2xl mb-8">
-                    <div className="flex items-center gap-2 mb-4">
-                      <NeuralBrain className="w-5 h-5" />
-                      <span className="text-xs font-bold uppercase tracking-widest text-indigo-400">HyzaLabs Intelligence Report</span>
-                    </div>
-                    <ul className="space-y-4 mb-6">
-                      {analysis.strategicInsights.map((insight, i) => (
-                        <li key={i} className="text-sm text-white/80 flex gap-3">
-                          <span className="text-indigo-400">•</span>
-                          {insight}
-                        </li>
-                      ))}
-                    </ul>
-                    <div className="pt-4 border-t border-white/10">
-                      <p className="text-xs font-bold text-white/40 uppercase mb-2">Primary Infrastructure Focus:</p>
-                      <p className="text-sm italic text-indigo-200">"{analysis.recommendedFocus}"</p>
-                    </div>
-                  </div>
-                  
-                  <div className="text-center space-y-4">
-                    <h4 className="text-xl font-bold">Analysis Complete.</h4>
-                    <p className="text-white/40 text-sm italic">Directing you to the strategy calendar...</p>
-                    <button 
-                      onClick={triggerCalendly}
-                      className="w-full py-4 bg-white text-black font-bold rounded-lg hover:bg-white/90 transition-all flex items-center justify-center gap-2 shadow-xl shadow-white/5"
-                    >
-                      {isBooked ? "Calendar Opened" : "Open Strategy Calendar"}
-                    </button>
-                    <button 
-                      onClick={() => setAnalysis(null)}
-                      className="text-xs text-white/20 hover:text-white/40 underline"
-                    >
-                      Redo Assessment
-                    </button>
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase text-white/20 tracking-widest">Email Address</label>
+                    <input type="email" required placeholder="alex@nexus.ai" className="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 text-sm text-white focus:border-indigo-500 outline-none transition-all" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
                   </div>
                 </div>
-              )}
-            </div>
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black uppercase text-white/20 tracking-widest">Operational Friction</label>
+                  <textarea rows={4} required placeholder="Where is your circuit breaking?" className="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 text-sm text-white focus:border-indigo-500 outline-none resize-none transition-all" value={formData.bottlenecks} onChange={e => setFormData({...formData, bottlenecks: e.target.value})} />
+                </div>
+                <button type="submit" disabled={isSubmitting} className="w-full py-6 bg-white text-black font-black uppercase text-[11px] tracking-[0.3em] rounded-2xl hover:bg-indigo-600 hover:text-white transition-all duration-500 shadow-xl shadow-white/5">
+                  {isSubmitting ? "Processing Sequence..." : "Initiate Audit"}
+                </button>
+              </form>
+            ) : (
+              <div className="text-center py-10 animate-in fade-in duration-700">
+                <div className="w-20 h-20 bg-indigo-500/10 rounded-full flex items-center justify-center mx-auto mb-8">
+                   <div className="w-4 h-4 bg-indigo-500 rounded-full animate-ping" />
+                </div>
+                <h4 className="text-3xl font-black mb-6 text-white tracking-tighter italic">Analysis Complete.</h4>
+                <p className="text-white/40 mb-10 text-sm font-light leading-relaxed">Your neural bottleneck report has been generated. Directing to the engineering calendar.</p>
+                <button onClick={triggerCalendly} className="w-full py-6 bg-indigo-600 text-white font-black uppercase text-[11px] tracking-[0.3em] rounded-2xl hover:bg-indigo-500 transition-all shadow-2xl shadow-indigo-600/30">
+                  Book Engineering Audit
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </SectionWrapper>
 
       {/* Footer */}
-      <footer className="py-20 px-6 border-t border-white/5">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="flex items-center gap-3">
-            <NeuralBrain className="w-6 h-6" />
-            <span className="text-lg font-bold tracking-tight">HyzaLabs</span>
+      <footer className="py-24 px-6 border-t border-white/5 relative z-10 bg-black text-center">
+        <div className="max-w-7xl mx-auto flex flex-col items-center gap-10">
+          <div className="flex items-center gap-4">
+            <NeuralBrain className="w-8 h-8" />
+            <span className="text-2xl font-black tracking-tighter uppercase italic text-white">HyzaLabs</span>
           </div>
-          <div className="flex gap-8 text-xs font-medium text-white/30 uppercase tracking-widest">
-            <span>© 2024 HyzaLabs Infrastructure</span>
-            <a href="#" className="hover:text-white">Privacy</a>
-            <a href="#" className="hover:text-white">Terms</a>
-            <a href="#" className="hover:text-white">Intelligence Log</a>
+          <div className="text-[10px] text-white uppercase tracking-[0.5em] font-black max-w-lg leading-loose">
+            High-Fidelity AI Infrastructure Laboratory. <br/>
+            Engineered exclusively for the fitness industry elite.
           </div>
-          <div className="text-xs text-white/20">
-            Engineered for the elite fitness industry.
+          <div className="flex flex-wrap justify-center gap-12 text-[9px] font-black uppercase tracking-widest text-white">
+            <button onClick={() => setActiveModal('privacy')} className="hover:text-indigo-400 transition-colors">Privacy Policy</button>
+            <button onClick={() => setActiveModal('disclaimer')} className="hover:text-indigo-400 transition-colors">Disclaimer</button>
+            <a href="mailto:info@hyzalabs.com" className="hover:text-indigo-400 transition-colors">Contact</a>
           </div>
+          <div className="text-[8px] text-white uppercase tracking-[0.2em] mt-10 font-bold opacity-100">© 2024 Protocol Lab 01-X | Foldeaki Group LLC</div>
         </div>
       </footer>
+
+      {/* Cookie Notice */}
+      {showCookieNotice && (
+        <div className="fixed bottom-6 left-6 right-6 md:left-auto md:right-8 md:w-96 z-[100] bg-zinc-900 border border-white/10 p-6 rounded-2xl shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <h4 className="text-xs font-black uppercase tracking-widest mb-3">Cookie Notice</h4>
+          <p className="text-[10px] text-white/50 leading-relaxed mb-6">
+            Our website uses cookies to improve your browsing experience and analyze traffic. By continuing to use our website, you consent to the use of cookies. For more information, see our <button onClick={() => setActiveModal('privacy')} className="text-white underline">Privacy Policy</button>.
+          </p>
+          <button 
+            onClick={handleCookieConsent}
+            className="w-full py-3 bg-white text-black font-black uppercase text-[9px] tracking-widest rounded-lg hover:bg-indigo-500 hover:text-white transition-all"
+          >
+            I Consent
+          </button>
+        </div>
+      )}
+
+      {/* Legal Modals */}
+      {activeModal && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-black/90 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-zinc-900 border border-white/10 rounded-3xl w-full max-w-2xl max-h-[80vh] overflow-y-auto p-10 relative">
+            <button 
+              onClick={() => setActiveModal(null)}
+              className="absolute top-6 right-6 text-white/20 hover:text-white text-2xl"
+            >
+              ×
+            </button>
+            
+            {activeModal === 'privacy' && (
+              <div className="text-left">
+                <h2 className="text-2xl font-black italic mb-6">Privacy Policy</h2>
+                <p className="text-[10px] text-white/30 uppercase tracking-widest mb-8">Effective Date: February 20, 2026</p>
+                <div className="space-y-6 text-sm text-white/60 leading-relaxed">
+                  <p>Foldeaki Group LLC, a Wyoming limited liability company, respects your privacy. This Privacy Policy explains how we collect, use, and protect personal information on our website.</p>
+                  
+                  <h4 className="text-white font-bold uppercase text-[10px] tracking-widest">1. Information We Collect</h4>
+                  <p>When you use our website contact or booking forms, we may collect: Name, Email address, Phone number (if included).</p>
+
+                  <h4 className="text-white font-bold uppercase text-[10px] tracking-widest">2. How We Use Your Information</h4>
+                  <p>We use collected information to respond to inquiries and booking requests, communicate updates related to our services, and improve our website and service offerings.</p>
+
+                  <h4 className="text-white font-bold uppercase text-[10px] tracking-widest">3. Sharing of Information</h4>
+                  <p>We do not sell, rent, or share your personal data with third parties.</p>
+
+                  <h4 className="text-white font-bold uppercase text-[10px] tracking-widest">4. Data Security</h4>
+                  <p>We take reasonable measures to protect your information. Data is stored securely and retained only as long as necessary.</p>
+
+                  <h4 className="text-white font-bold uppercase text-[10px] tracking-widest">5. Your Rights</h4>
+                  <p>For EU users (GDPR compliance), you have the right to access your personal data, correct inaccurate data, and request deletion of your data. To exercise your rights, contact us at info@hyzalabs.com.</p>
+
+                  <h4 className="text-white font-bold uppercase text-[10px] tracking-widest">6. Business Contact Information</h4>
+                  <p>Registered Office:<br/>Foldeaki Group LLC<br/>30 N Gould St Ste N<br/>Sheridan, WY 82801<br/>Email: info@hyzalabs.com</p>
+
+                  <h4 className="text-white font-bold uppercase text-[10px] tracking-widest">7. Policy Updates</h4>
+                  <p>We may update this policy occasionally. Updates will be posted on this page.</p>
+                </div>
+              </div>
+            )}
+
+            {activeModal === 'disclaimer' && (
+              <div className="text-left">
+                <h2 className="text-2xl font-black italic mb-6">Disclaimer</h2>
+                <div className="space-y-6 text-sm text-white/60 leading-relaxed">
+                  <p>The content and AI tools provided by Foldeaki Group LLC are for general informational purposes only.</p>
+                  <ul className="list-disc pl-5 space-y-3">
+                    <li>AI-generated outputs may not be fully accurate or complete.</li>
+                    <li>Use of our website, tools, or advice is at your own risk.</li>
+                    <li>We are not liable for any damages, losses, or misuse of the AI services.</li>
+                    <li>This website does not provide professional, legal, or financial advice.</li>
+                  </ul>
+                </div>
+              </div>
+            )}
+            
+            <button 
+              onClick={() => setActiveModal(null)}
+              className="mt-10 w-full py-4 bg-white/5 border border-white/10 text-white font-black uppercase text-[10px] tracking-widest rounded-xl hover:bg-white/10 transition-all"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
