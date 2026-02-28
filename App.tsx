@@ -328,6 +328,10 @@ const App: React.FC = () => {
           <div className="flex flex-wrap justify-center gap-12 text-[9px] font-black uppercase tracking-widest text-white">
             <button onClick={() => setActiveModal('privacy')} className="hover:text-indigo-400 transition-colors">Privacy Policy</button>
             <button onClick={() => setActiveModal('disclaimer')} className="hover:text-indigo-400 transition-colors">Disclaimer</button>
+            <a href="/logo.png" download="HyzaLabs-Logo.png" className="hover:text-indigo-400 transition-colors flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download PNG Logo
+            </a>
             <a href="mailto:info@hyzalabs.com" className="hover:text-indigo-400 transition-colors">Contact</a>
           </div>
           <div className="text-[8px] text-white uppercase tracking-[0.2em] mt-10 font-bold opacity-100">© 2024 Protocol Lab 01-X | Foldeaki Group LLC</div>
