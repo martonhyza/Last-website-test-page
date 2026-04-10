@@ -7,8 +7,11 @@ const PrivacyPolicy: React.FC = () => {
       <section className="space-y-8">
         <div>
           <p className="text-indigo-400 font-bold uppercase tracking-widest text-xs mb-2">Effective Date: April 9, 2026</p>
-          <p>
+          <p className="mb-4">
             HyzaLabs ("we," "our," or "us"), operated by Foldeaki Group LLC, is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you visit our website and use our services.
+          </p>
+          <p className="text-white/80 italic">
+            This policy applies to all SMS communications sent by HyzaLabs.
           </p>
         </div>
 
@@ -35,17 +38,21 @@ const PrivacyPolicy: React.FC = () => {
         <div className="space-y-4">
           <h2 className="text-2xl font-bold">3. SMS & A2P Compliance</h2>
           <p>
-            By providing your phone number, you consent to receive SMS communications from HyzaLabs, including appointment reminders, follow-ups, and support messages.
+            By submitting your information through our website forms, you consent to receive SMS communications from HyzaLabs, including appointment reminders, follow-ups, and customer support messages.
+          </p>
+          <p>
+            You will only receive messages if you explicitly opt in via our forms.
           </p>
           <ul className="list-disc pl-6 space-y-2">
             <li>Message frequency may vary.</li>
             <li>Message and data rates may apply.</li>
-            <li>You can opt out at any time by replying <strong>STOP</strong> to any message.</li>
+            <li>You can opt out at any time by replying <strong>STOP</strong>.</li>
+            <li>For assistance, reply <strong>HELP</strong> or contact us at <a href="mailto:info@hyzalabs.com" className="text-indigo-400 hover:underline">info@hyzalabs.com</a>.</li>
           </ul>
           <div className="bg-white/5 border border-white/10 p-6 rounded-2xl mt-4">
             <p className="font-bold text-white mb-2 italic">Important Disclosure:</p>
             <p className="italic">
-              "Mobile information will not be shared with third parties or affiliates for marketing or promotional purposes. All categories exclude text messaging originator opt-in data and consent; this information will not be shared with any third parties."
+              Mobile information will not be shared with third parties or affiliates for marketing or promotional purposes. All categories exclude text messaging originator opt-in data and consent; this information will not be shared with any third parties.
             </p>
           </div>
         </div>
