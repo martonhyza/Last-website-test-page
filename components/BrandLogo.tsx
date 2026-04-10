@@ -14,68 +14,43 @@ export const LogoMark: React.FC<{ className?: string; glowing?: boolean }> = ({ 
             <stop offset="0%" stopColor="#6366f1" />
             <stop offset="100%" stopColor="#d946ef" />
           </linearGradient>
-          <filter id="coreGlow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="3" result="blur" />
+          <filter id="ultraGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation={glowing ? "4" : "2"} result="blur" />
             <feComposite in="SourceGraphic" in2="blur" operator="over" />
           </filter>
         </defs>
-
-        {/* Outer Orbital Rings - Representing Systems & Infrastructure */}
+        
+        {/* Outer Ring */}
         <circle 
           cx="50" cy="50" r="45" 
           fill="none" 
           stroke="url(#nexusGradient)" 
-          strokeWidth="0.5" 
-          strokeDasharray="2 8"
-          className="opacity-20"
-        >
-          <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="30s" repeatCount="indefinite" />
+          strokeWidth="1" 
+          strokeDasharray="1 4"
+          className="opacity-40"
+        />
+        
+        {/* Inner Nexus Shell */}
+        <path 
+          d="M50 20 A30 30 0 1 1 50 80 A30 30 0 1 1 50 20" 
+          fill="none" 
+          stroke="url(#nexusGradient)" 
+          strokeWidth="4" 
+          filter="url(#ultraGlow)"
+          className="opacity-80"
+          strokeLinecap="round"
+        />
+
+        {/* Core Synapse */}
+        <circle cx="50" cy="50" r="6" fill="white" filter="url(#ultraGlow)">
+          <animate attributeName="r" values="5;7;5" dur="3s" repeatCount="indefinite" />
         </circle>
 
-        {/* The Nexus Shards - Geometric & Unique */}
-        <g className="opacity-90">
-          {/* Top Shard */}
-          <path 
-            d="M50 15 L65 35 L50 42 L35 35 Z" 
-            fill="url(#nexusGradient)" 
-            className="group-hover:translate-y-[-2px] transition-transform duration-500"
-          />
-          {/* Bottom Shard */}
-          <path 
-            d="M50 85 L65 65 L50 58 L35 65 Z" 
-            fill="url(#nexusGradient)" 
-            className="group-hover:translate-y-[2px] transition-transform duration-500"
-          />
-          {/* Left Shard */}
-          <path 
-            d="M15 50 L35 35 L42 50 L35 65 Z" 
-            fill="url(#nexusGradient)" 
-            className="group-hover:translate-x-[-2px] transition-transform duration-500"
-          />
-          {/* Right Shard */}
-          <path 
-            d="M85 50 L65 35 L58 50 L65 65 Z" 
-            fill="url(#nexusGradient)" 
-            className="group-hover:translate-x-[2px] transition-transform duration-500"
-          />
-        </g>
-
-        {/* The Intelligence Core */}
-        <circle 
-          cx="50" cy="50" r="12" 
-          fill="white" 
-          filter="url(#coreGlow)"
-          className="opacity-90"
-        >
-          <animate attributeName="r" values="11;13;11" dur="4s" repeatCount="indefinite" />
-        </circle>
-
-        {/* Neural Synapse Points */}
-        <g fill="white">
-          <circle cx="50" cy="15" r="2" className="animate-pulse" />
-          <circle cx="50" cy="85" r="2" className="animate-pulse" style={{ animationDelay: '1s' }} />
-          <circle cx="15" cy="50" r="2" className="animate-pulse" style={{ animationDelay: '2s' }} />
-          <circle cx="85" cy="50" r="2" className="animate-pulse" style={{ animationDelay: '3s' }} />
+        {/* Static data bars */}
+        <g stroke="white" strokeWidth="2" strokeLinecap="round" opacity="0.6">
+          <line x1="65" y1="40" x2="85" y2="40" />
+          <line x1="65" y1="50" x2="90" y2="50" />
+          <line x1="65" y1="60" x2="80" y2="60" />
         </g>
       </svg>
     </div>

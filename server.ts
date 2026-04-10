@@ -15,18 +15,30 @@ async function startServer() {
     res.json({ status: "ok" });
   });
 
+  console.log(`Starting server in ${process.env.NODE_ENV || 'development'} mode`);
+
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
     });
     app.use(vite.middlewares);
+    console.log("Vite middleware loaded");
   } else {
     const distPath = path.join(process.cwd(), 'dist');
+    console.log(`Serving static files from: ${distPath}`);
     app.use(express.static(distPath));
-    // SPA fallback for production
-    app.get('*', (req, res) => {
-      res.sendFile(path.join(distPath, 'index.html'));
+    
+    // SPA fallback for production - using regex for maximum compatibility in Express 5
+    app.get(/^(?!\/api).+/, (req, res) => {
+      console.log(`Catch-all route hit for: ${req.url}`);
+      const indexPath = path.join(distPath, 'index.html');
+      res.sendFile(indexPath, (err) => {
+        if (err) {
+          console.error(`Error sending index.html from ${indexPath}:`, err);
+          res.status(404).send("File not found");
+        }
+      });
     });
   }
 

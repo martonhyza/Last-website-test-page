@@ -4,13 +4,38 @@
       <stop offset="0%" stop-color="#6366f1" />
       <stop offset="100%" stop-color="#d946ef" />
     </linearGradient>
+    <filter id="ultraGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
   </defs>
-  <circle cx="50" cy="50" r="48" fill="black" />
-  <g>
-    <path d="M50 15 L65 35 L50 42 L35 35 Z" fill="url(#nexusGradient)" />
-    <path d="M50 85 L65 65 L50 58 L35 65 Z" fill="url(#nexusGradient)" />
-    <path d="M15 50 L35 35 L42 50 L35 65 Z" fill="url(#nexusGradient)" />
-    <path d="M85 50 L65 35 L58 50 L65 65 Z" fill="url(#nexusGradient)" />
+  
+  <circle 
+    cx="50" cy="50" r="45" 
+    fill="none" 
+    stroke="url(#nexusGradient)" 
+    stroke-width="1" 
+    stroke-dasharray="1 4"
+    opacity="0.4"
+  />
+  
+  <path 
+    d="M50 20 A30 30 0 1 1 50 80 A30 30 0 1 1 50 20" 
+    fill="none" 
+    stroke="url(#nexusGradient)" 
+    stroke-width="4" 
+    filter="url(#ultraGlow)"
+    opacity="0.8"
+    stroke-linecap="round"
+  />
+
+  <circle cx="50" cy="50" r="6" fill="white" filter="url(#ultraGlow)">
+    <animate attributeName="r" values="5;7;5" dur="3s" repeatCount="indefinite" />
+  </circle>
+
+  <g stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.6">
+    <line x1="65" y1="40" x2="85" y2="40" />
+    <line x1="65" y1="50" x2="90" y2="50" />
+    <line x1="65" y1="60" x2="80" y2="60" />
   </g>
-  <circle cx="50" cy="50" r="12" fill="white" />
 </svg>
