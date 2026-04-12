@@ -8,8 +8,8 @@ export const analyzeBottlenecks = async (data: LeadFormData) => {
   const prompt = `Analyze the following operational bottlenecks for a fitness business/gym and provide a professional, calm, strategic 3-point insight report.
   
   Business Context:
-  - Name: ${data.fullName}
-  - Monthly Budget Range: ${data.budget}
+  - Principal: ${data.fullName}
+  - Business Info: ${data.businessInfo}
   - Reported Bottlenecks: ${data.bottlenecks}
   
   Instructions:

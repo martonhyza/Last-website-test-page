@@ -17,8 +17,10 @@ const Home: React.FC = () => {
     fullName: '',
     email: '',
     phone: '',
-    budget: '',
-    bottlenecks: ''
+    address: '',
+    businessInfo: '',
+    bottlenecks: '',
+    smsConsent: false
   });
   const [analysis, setAnalysis] = useState<AnalysisResponse | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -266,24 +268,61 @@ const Home: React.FC = () => {
 
           <div className="bg-[#080808] p-10 md:p-16 rounded-[3rem] border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.8)] relative overflow-hidden">
             <div className="absolute -top-24 -right-24 w-64 h-64 bg-indigo-500/5 blur-[100px] rounded-full" />
-            <h3 className="text-3xl font-bold mb-10 tracking-tight text-white text-left">System Assessment</h3>
+            <h3 className="text-3xl font-bold mb-10 tracking-tight text-white text-left">Contact & Audit Request</h3>
             {!analysis ? (
-              <form onSubmit={handleSubmit} className="space-y-8 relative z-10 text-left">
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div className="space-y-3">
-                    <label className="text-[10px] font-black uppercase text-white/20 tracking-widest">Principal Name</label>
-                    <input type="text" required placeholder="Alex Rivera" className="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 text-sm text-white focus:border-indigo-500 outline-none transition-all" value={formData.fullName} onChange={e => setFormData({...formData, fullName: e.target.value})} />
+              <form onSubmit={handleSubmit} className="space-y-6 relative z-10 text-left">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase text-white/20 tracking-widest">Full Name</label>
+                    <input type="text" required placeholder="Alex Rivera" className="w-full bg-black/40 border border-white/10 rounded-xl px-5 py-3.5 text-sm text-white focus:border-indigo-500 outline-none transition-all" value={formData.fullName} onChange={e => setFormData({...formData, fullName: e.target.value})} />
                   </div>
-                  <div className="space-y-3">
+                  <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase text-white/20 tracking-widest">Email Address</label>
-                    <input type="email" required placeholder="alex@nexus.ai" className="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 text-sm text-white focus:border-indigo-500 outline-none transition-all" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
+                    <input type="email" required placeholder="alex@nexus.ai" className="w-full bg-black/40 border border-white/10 rounded-xl px-5 py-3.5 text-sm text-white focus:border-indigo-500 outline-none transition-all" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
                   </div>
                 </div>
-                <div className="space-y-3">
-                  <label className="text-[10px] font-black uppercase text-white/20 tracking-widest">Operational Friction</label>
-                  <textarea rows={4} required placeholder="Where is your circuit breaking?" className="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 text-sm text-white focus:border-indigo-500 outline-none resize-none transition-all" value={formData.bottlenecks} onChange={e => setFormData({...formData, bottlenecks: e.target.value})} />
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase text-white/20 tracking-widest">Phone Number</label>
+                    <input type="tel" required placeholder="+1 (555) 000-0000" className="w-full bg-black/40 border border-white/10 rounded-xl px-5 py-3.5 text-sm text-white focus:border-indigo-500 outline-none transition-all" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase text-white/20 tracking-widest">Business Address</label>
+                    <input type="text" required placeholder="123 Innovation Way, Suite 100" className="w-full bg-black/40 border border-white/10 rounded-xl px-5 py-3.5 text-sm text-white focus:border-indigo-500 outline-none transition-all" value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} />
+                  </div>
                 </div>
-                <button type="submit" disabled={isSubmitting} className="w-full py-6 bg-white text-black font-black uppercase text-[11px] tracking-[0.3em] rounded-2xl hover:bg-indigo-600 hover:text-white transition-all duration-500 shadow-xl shadow-white/5">
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase text-white/20 tracking-widest">Business Information</label>
+                  <input type="text" required placeholder="Company Name, Industry, and Scale" className="w-full bg-black/40 border border-white/10 rounded-xl px-5 py-3.5 text-sm text-white focus:border-indigo-500 outline-none transition-all" value={formData.businessInfo} onChange={e => setFormData({...formData, businessInfo: e.target.value})} />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase text-white/20 tracking-widest">Operational Friction</label>
+                  <textarea rows={3} required placeholder="Where is your circuit breaking?" className="w-full bg-black/40 border border-white/10 rounded-xl px-5 py-3.5 text-sm text-white focus:border-indigo-500 outline-none resize-none transition-all" value={formData.bottlenecks} onChange={e => setFormData({...formData, bottlenecks: e.target.value})} />
+                </div>
+
+                <div className="space-y-4 pt-2">
+                  <div className="flex items-start gap-3">
+                    <input 
+                      type="checkbox" 
+                      id="smsConsent" 
+                      required 
+                      className="mt-1 w-4 h-4 rounded border-white/10 bg-black/40 text-indigo-500 focus:ring-indigo-500"
+                      checked={formData.smsConsent}
+                      onChange={e => setFormData({...formData, smsConsent: e.target.checked})}
+                    />
+                    <label htmlFor="smsConsent" className="text-[10px] text-white/40 leading-relaxed font-medium">
+                      I consent to receive SMS communications from HyzaLabs, including appointment reminders, follow-ups, and customer support messages. I understand that message frequency may vary and message/data rates may apply. Reply STOP to opt-out or HELP for assistance.
+                    </label>
+                  </div>
+                  <p className="text-[9px] text-white/20 leading-relaxed">
+                    By clicking "Initiate Audit", you agree to our <Link to="/terms-of-service" className="text-indigo-400 hover:underline">Terms of Service</Link> and <Link to="/privacy-policy" className="text-indigo-400 hover:underline">Privacy Policy</Link>. Mobile information will not be shared with third parties or affiliates for marketing or promotional purposes.
+                  </p>
+                </div>
+
+                <button type="submit" disabled={isSubmitting} className="w-full py-5 bg-white text-black font-black uppercase text-[11px] tracking-[0.3em] rounded-xl hover:bg-indigo-600 hover:text-white transition-all duration-500 shadow-xl shadow-white/5">
                   {isSubmitting ? "Processing Sequence..." : "Initiate Audit"}
                 </button>
               </form>

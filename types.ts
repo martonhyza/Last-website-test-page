@@ -3,8 +3,10 @@ export interface LeadFormData {
   fullName: string;
   email: string;
   phone: string;
-  budget: string;
+  address: string;
+  businessInfo: string;
   bottlenecks: string;
+  smsConsent: boolean;
 }
 
 export interface AnalysisResponse {
