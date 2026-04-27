@@ -143,6 +143,8 @@ function useNeuralNetwork(canvasRef: React.RefObject<HTMLCanvasElement | null>) 
     };
 
     const handleMouseMove = (e: MouseEvent) => {
+      // Disable interaction on mobile
+      if (window.innerWidth < 1024) return;
       mouse.x = e.clientX;
       mouse.y = e.clientY;
     };
@@ -204,7 +206,7 @@ const TiltCard = ({ children, className = "" }: { children: React.ReactNode, cla
   const shineRef = useRef<HTMLDivElement>(null);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current || !shineRef.current) return;
+    if (!cardRef.current || !shineRef.current || window.innerWidth < 1024) return;
     const { left, top, width, height } = cardRef.current.getBoundingClientRect();
     const x = e.clientX - left;
     const y = e.clientY - top;
@@ -305,7 +307,7 @@ const MagneticButton = ({ children, className = "" }: { children: React.ReactNod
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (!buttonRef.current) return;
+    if (!buttonRef.current || window.innerWidth < 1024) return;
     const { left, top, width, height } = buttonRef.current.getBoundingClientRect();
     const x = e.clientX - (left + width / 2);
     const y = e.clientY - (top + height / 2);
