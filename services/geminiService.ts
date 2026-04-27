@@ -5,7 +5,7 @@ import { LeadFormData } from "../types.ts";
 export const analyzeBottlenecks = async (data: LeadFormData) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
-  const prompt = `Analyze the following operational bottlenecks for a fitness business/gym and provide a professional, calm, strategic 3-point insight report.
+  const prompt = `Analyze the following operational bottlenecks for a roofing business and provide a professional, calm, strategic 3-point insight report.
   
   Business Context:
   - Principal: ${data.fullName}

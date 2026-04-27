@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..600;1,9..40,400..600&family=Fira+Code:wght@400;500;700&family=Syne:wght@400;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Syne", sans-serif;
+  --font-mono: "Fira Code", monospace;
+
+  --color-bg-void: #06060a;
+  --color-bg-deep: #0d0d1f;
+  --color-bg-card: #0f0f1c;
+  --color-bg-card-hover: #13132a;
+  --color-accent: #6366f1;
+  --color-accent-2: #8b5cf6;
+  --color-accent-glow: rgba(99, 102, 241, 0.25);
+  --color-accent-light: #a5b4fc;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #c9c7d8;
+  --color-text-muted: #6b6b8a;
+  --color-border: rgba(255, 255, 255, 0.06);
+  --color-border-accent: rgba(99, 102, 241, 0.3);
+}
+
+@layer base {
+  body {
+    @apply bg-bg-void text-text-primary font-sans antialiased overflow-x-hidden;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+  }
+
+  h1, h2, h3, h4, .font-display {
+    @apply font-display;
+  }
+}
+
+@layer components {
+  .gradient-text {
+    @apply bg-linear-to-r from-[#a5b4fc] to-[#8b5cf6] bg-clip-text text-transparent;
+  }
+
+  .btn-ghost {
+    @apply px-7 py-3.5 rounded-lg font-semibold text-accent-light border border-border-accent transition-all duration-300 hover:bg-accent/10;
+  }
+
+  .glass-card {
+    @apply bg-bg-card border border-border rounded-[14px] shadow-[0_0_40px_rgba(0,0,0,0.6)] backdrop-blur-xl transition-all duration-300;
+  }
+
+  .reveal {
+    @apply opacity-0 translate-y-8 transition-all duration-700 ease-out;
+  }
+
+  .revealed {
+    @apply opacity-100 translate-y-0;
+  }
+}
+
+/* --- Global Custom Classes --- */
+body.mobile-menu-open main {
+  filter: blur(10px);
+  pointer-events: none;
+  transition: filter 0.4s ease;
+}
+
+main {
+  transition: filter 0.4s ease;
+}
+
+.btn-primary {
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  padding: 1rem 2rem !important;
+  border-radius: 0.75rem !important;
+  font-weight: 700 !important;
+  color: white !important;
+  background-image: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%) !important;
+  background-color: #6366f1 !important;
+  background-size: 200% auto !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4) !important;
+  border: none !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+}
+
+.btn-primary:hover {
+  transform: scale(1.05) !important;
+  background-position: right center !important;
+  box-shadow: 0 15px 35px -5px rgba(139, 92, 246, 0.6) !important;
+}
+
+.btn-primary:active {
+  transform: scale(0.95) !important;
+}
+
+@keyframes meshDrift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.mesh-gradient {
+  background: radial-gradient(circle at 50% 50%, var(--color-bg-deep), var(--color-bg-void));
+  background-size: 400% 400%;
+  animation: meshDrift 12s infinite ease-in-out;
+}
+
+/* Custom Cursor */
+.cursor-dot {
+  @apply fixed w-1.5 h-1.5 bg-accent rounded-full pointer-events-none z-[9999];
+  transform: translate(-50%, -50%);
+}
+
+.cursor-ring {
+  @apply fixed w-6 h-6 border border-accent-light rounded-full pointer-events-none z-[9998] opacity-50;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s, height 0.3s, opacity 0.3s;
+}
+
+@media (hover: none) {
+  .cursor-dot, .cursor-ring {
+    display: none;
+  }
+}
+

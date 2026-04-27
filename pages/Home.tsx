@@ -116,7 +116,7 @@ const Home: React.FC = () => {
           </div>
 
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-indigo-500/20 bg-indigo-500/10 text-[10px] font-bold text-indigo-300 mb-10 uppercase tracking-[0.3em]">
-            Autonomous Enterprise Operating Systems
+            AI-Driven Revenue Core for US Roofers
           </div>
           
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-8 leading-[0.9] text-white">
@@ -125,7 +125,7 @@ const Home: React.FC = () => {
           </h1>
           
           <p className="text-base md:text-xl text-white/50 max-w-2xl mx-auto mb-14 font-light leading-relaxed tracking-wide">
-            The next generation of high-fidelity AI infrastructure for the fitness elite. <br className="hidden md:block"/> Engineered to eliminate manual friction and maximize revenue capture.
+            The next generation of high-fidelity AI infrastructure for the roofing industry. <br className="hidden md:block"/> Engineered to eliminate lead leakage and automate your claim-to-cash cycle.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 w-full sm:w-auto">
@@ -150,14 +150,14 @@ const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="grid lg:grid-cols-2 gap-20 md:gap-32 items-center">
             <div className="order-2 lg:order-1 text-left">
-              <h2 className="text-4xl md:text-6xl font-black tracking-tighter italic leading-[0.9] mb-8 text-white">Friction Analysis.</h2>
-              <p className="text-white/40 text-lg md:text-xl font-light mb-10 leading-relaxed">Most systems are siloed. We architect a unified neural circuit that captures every lead, recovers every payment, and automates every touchpoint.</p>
+              <h2 className="text-4xl md:text-6xl font-black tracking-tighter italic leading-[0.9] mb-8 text-white">Roofing Infrastructure.</h2>
+              <p className="text-white/40 text-lg md:text-xl font-light mb-10 leading-relaxed">Field operations are often siloed. We architect a unified neural circuit that qualifies every homeowner, automates solar/roofing cross-sells, and streamlines your estimating pipeline.</p>
               
               <div className="space-y-10">
                 {[
-                  { title: "Revenue Recovery", desc: "Automated sequences that utilize AI to handle failed billing with member empathy." },
-                  { title: "Predictive Intelligence", desc: "Identifying member churn signals before they result in a cancellation." },
-                  { title: "Admin Offloading", desc: "Transitioning high-friction manual tasks to intelligent autonomous agents." }
+                  { title: "24/7 Lead Response", desc: "Automated AI agents that qualify storm leads and set inspections while your competitors are still sleeping." },
+                  { title: "Production Intelligence", desc: "Identifying bottlenecks in your supply chain and labor scheduling before they delay your completion dates." },
+                  { title: "Estimator Offloading", desc: "Transitioning high-volume admin tasks and project documentation to autonomous intelligent agents." }
                 ].map((item, idx) => (
                   <div key={idx} className="flex gap-6 group">
                     <div className="w-12 h-12 rounded-2xl border border-indigo-500/20 flex-shrink-0 flex items-center justify-center group-hover:bg-indigo-500/10 group-hover:border-indigo-500 transition-all duration-500">
@@ -218,14 +218,14 @@ const Home: React.FC = () => {
       <SectionWrapper id="solutions" className="py-24 md:py-48 bg-black border-y border-white/5">
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="mb-20 text-center max-w-3xl mx-auto">
-            <h2 className="text-4xl md:text-7xl font-black tracking-tighter italic text-white mb-6">Built Assets.</h2>
-            <p className="text-white/40 text-lg font-light leading-relaxed">We don't rent you software. We build engineering assets that become permanent equity in your business model.</p>
+            <h2 className="text-4xl md:text-7xl font-black tracking-tighter italic text-white mb-6">Roofing Assets.</h2>
+            <p className="text-white/40 text-lg font-light leading-relaxed">We don't rent you software. We build engineering assets that become permanent equity in your roofing business.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { title: "AI Workflows", desc: "Qualify every lead and handle every inquiry 24/7 with human-level nuance and zero latency." },
-              { title: "Bridge Infrastructure", desc: "Custom-built API layers that unify your CRM, billing, and access control into a single source of truth." },
-              { title: "Telemetry Hubs", desc: "Enterprise-grade dashboards providing real-time operational visibility and predictive forecasting." }
+              { title: "Lead Qualifiers", desc: "Automated 24/7 conversion of storm-damage and replacement leads with zero human latency." },
+              { title: "CRM Synergy", desc: "Custom-built API layers that unify JobNimbus, AccuLynx, or any CRM with your field communication tools." },
+              { title: "Margin Telemetry", desc: "Enterprise-grade dashboards providing real-time visibility into project margins and estimator performance." }
             ].map((sol, idx) => (
               <div key={idx} className="p-10 rounded-[2.5rem] bg-white/[0.02] border border-white/5 hover:border-indigo-500/30 hover:bg-white/[0.05] transition-all duration-700 group text-left">
                 <div className="w-12 h-12 rounded-2xl bg-indigo-500/5 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
@@ -257,8 +257,8 @@ const Home: React.FC = () => {
       <SectionWrapper id="strategy" className="py-24 md:py-48 px-6 bg-[#020202]">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 md:gap-32 items-center relative z-10">
           <div className="text-left">
-            <h2 className="text-4xl md:text-7xl font-black mb-10 tracking-tighter italic text-white leading-[0.9]">Initiate Audit.</h2>
-            <p className="text-white/40 mb-12 text-lg font-light leading-relaxed">Submit your operational constraints. If there is a strategic alignment, we will invite you to a 1-on-1 engineering deep-dive.</p>
+            <h2 className="text-4xl md:text-7xl font-black mb-10 tracking-tighter italic text-white leading-[0.9]">Initiate Roofing Audit.</h2>
+            <p className="text-white/40 mb-12 text-lg font-light leading-relaxed">Submit your operational constraints. If there is a strategic alignment, we will invite you to a 1-on-1 engineering deep-dive into your roofing infrastructure.</p>
             <div className="p-10 rounded-[2.5rem] bg-gradient-to-br from-indigo-900/10 to-transparent border border-indigo-500/10 shadow-2xl">
               <p className="italic text-sm md:text-base text-indigo-200/50 leading-loose">
                 "We don't optimize for software features. We optimize for your bottom line. Mature infrastructure is the only way to scale vertically without adding headcount."
@@ -348,14 +348,17 @@ const Home: React.FC = () => {
           <BrandLogo />
           <div className="text-[10px] text-white uppercase tracking-[0.5em] font-black max-w-lg leading-loose">
             High-Fidelity AI Infrastructure Laboratory. <br/>
-            Engineered exclusively for the fitness industry elite.
+            Engineered exclusively for elite US roofing contractors.
           </div>
           <div className="flex flex-wrap justify-center gap-12 text-[9px] font-black uppercase tracking-widest text-white">
             <Link to="/privacy-policy" className="hover:text-indigo-400 transition-colors">Privacy Policy</Link>
             <Link to="/terms-of-service" className="hover:text-indigo-400 transition-colors">Terms of Service</Link>
             <a href="mailto:info@hyzalabs.com" className="hover:text-indigo-400 transition-colors">Contact</a>
           </div>
-          <div className="text-[8px] text-white uppercase tracking-[0.2em] mt-10 font-bold opacity-100">© 2024 Protocol Lab 01-X | Foldeaki Group LLC</div>
+          <div className="text-[8px] text-white uppercase tracking-[0.2em] mt-10 font-bold opacity-100">
+            © 2024 Protocol Lab 01-X | Foldeaki Group LLC <br/>
+            Specialized AI Architecture for the US Roofing Industry
+          </div>
         </div>
       </footer>
 
