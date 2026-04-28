@@ -1,0 +1,67 @@
+<svg width="800" height="800" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Premium Gradient System -->
+    <linearGradient id="cubeTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c7d2fe" />
+      <stop offset="100%" stop-color="#818cf8" />
+    </linearGradient>
+    <linearGradient id="cubeL" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1" />
+      <stop offset="100%" stop-color="#312e81" />
+    </linearGradient>
+    <linearGradient id="cubeR" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4f46e5" />
+      <stop offset="100%" stop-color="#1e1b4b" />
+    </linearGradient>
+    <radialGradient id="aiCore" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#e0e7ff" />
+      <stop offset="40%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="transparent" />
+    </radialGradient>
+    
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background Glow (Subtle) -->
+  <circle cx="50" cy="50" r="45" fill="#818cf8" fill-opacity="0.05" />
+
+  <g transform="translate(0, 2)">
+    <!-- Base Faces -->
+    <path d="M50 15 L85 30 L50 45 L15 30 Z" fill="url(#cubeTop)" fill-opacity="0.2" />
+    <path d="M50 45 L15 30 L15 75 L50 90 Z" fill="url(#cubeL)" fill-opacity="0.2" />
+    <path d="M50 45 L85 30 L85 75 L50 90 Z" fill="url(#cubeR)" fill-opacity="0.2" />
+
+    <!-- Isometric Edges (Sharp Lines) -->
+    <g stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M50 15 L85 30 L50 45 L15 30 Z" stroke-opacity="0.9" />
+      <path d="M15 30 L15 75" stroke-opacity="0.5" />
+      <path d="M50 45 L50 90" stroke-opacity="0.7" />
+      <path d="M85 30 L85 75" stroke-opacity="0.5" />
+      <path d="M15 75 L50 90 L85 75" stroke-opacity="0.9" />
+    </g>
+
+    <!-- The Ladder (Left Face) -->
+    <g transform="translate(20, 42)">
+      <line x1="0" y1="0" x2="8" y2="4" stroke="white" stroke-opacity="0.8" stroke-width="1.5" stroke-linecap="round" />
+      <line x1="0" y1="8" x2="8" y2="12" stroke="white" stroke-opacity="0.8" stroke-width="1.5" stroke-linecap="round" />
+      <line x1="0" y1="16" x2="8" y2="20" stroke="white" stroke-opacity="0.8" stroke-width="1.5" stroke-linecap="round" />
+      <line x1="0" y1="24" x2="8" y2="28" stroke="white" stroke-opacity="0.8" stroke-width="1.5" stroke-linecap="round" />
+      <line x1="0" y1="32" x2="8" y2="36" stroke="white" stroke-opacity="0.8" stroke-width="1.5" stroke-linecap="round" />
+      
+      <line x1="0" y1="-5" x2="0" y2="35" stroke="white" stroke-opacity="0.3" stroke-width="1" />
+      <line x1="8" y1="-1" x2="8" y2="39" stroke="white" stroke-opacity="0.3" stroke-width="1" />
+    </g>
+
+    <!-- Glowing Corner Accents -->
+    <circle cx="50" cy="15" r="1.2" fill="white" filter="url(#glow)" />
+    <circle cx="50" cy="45" r="1.2" fill="white" filter="url(#glow)" />
+    <circle cx="50" cy="90" r="1.2" fill="white" filter="url(#glow)" />
+
+    <!-- The Core Engine -->
+    <circle cx="50" cy="52" r="8" fill="url(#aiCore)" fill-opacity="0.5" />
+    <circle cx="50" cy="52" r="1.5" fill="white" filter="url(#glow)" />
+  </g>
+</svg>
