@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import PrivacyPolicyPage from './pages/PrivacyPolicy.tsx';
 import TermsOfServicePage from './pages/TermsOfService.tsx';
 import BrandLogo, { LogoMark } from './components/BrandLogo.tsx';
-import { ChatWidget } from './components/ChatWidget.tsx';
 import { 
   Hexagon, 
   ArrowRight, 
@@ -600,7 +599,6 @@ export default function App() {
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
         <Route path="/terms-of-service" element={<TermsOfServicePage />} />
       </Routes>
-      <ChatWidget />
     </Router>
   );
 }
