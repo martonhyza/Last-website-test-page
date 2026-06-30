@@ -342,62 +342,6 @@ const MagneticButton = ({ children, className = "" }: { children: React.ReactNod
   );
 };
 
-const CustomCursor = () => {
-  const dotRef = useRef<HTMLDivElement>(null);
-  const ringRef = useRef<HTMLDivElement>(null);
-  const dotPos = useRef({ x: 0, y: 0 });
-  const ringPos = useRef({ x: 0, y: 0 });
-  const [isHovering, setIsHovering] = useState(false);
-
-  useEffect(() => {
-    const moveCursor = (e: MouseEvent) => {
-      dotPos.current = { x: e.clientX, y: e.clientY };
-      if (dotRef.current) {
-        dotRef.current.style.left = `${e.clientX}px`;
-        dotRef.current.style.top = `${e.clientY}px`;
-      }
-    };
-
-    const handleHover = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (target.closest('button, a, .tilt-card')) {
-        setIsHovering(true);
-      } else {
-        setIsHovering(false);
-      }
-    };
-
-    const animateRing = () => {
-      // Lerp ring
-      ringPos.current.x += (dotPos.current.x - ringPos.current.x) * 0.15;
-      ringPos.current.y += (dotPos.current.y - ringPos.current.y) * 0.15;
-      
-      if (ringRef.current) {
-        ringRef.current.style.left = `${ringPos.current.x}px`;
-        ringRef.current.style.top = `${ringPos.current.y}px`;
-      }
-      requestAnimationFrame(animateRing);
-    };
-
-    window.addEventListener('mousemove', moveCursor);
-    window.addEventListener('mouseover', handleHover);
-    const anim = requestAnimationFrame(animateRing);
-
-    return () => {
-      window.removeEventListener('mousemove', moveCursor);
-      window.removeEventListener('mouseover', handleHover);
-      cancelAnimationFrame(anim);
-    };
-  }, []);
-
-  return (
-    <>
-      <div ref={dotRef} className={`cursor-dot ${isHovering ? 'scale-300' : ''}`} />
-      <div ref={ringRef} className={`cursor-ring ${isHovering ? 'scale-150 opacity-80' : ''}`} />
-    </>
-  );
-};
-
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -632,7 +576,6 @@ function Home() {
 
   return (
     <div className="relative">
-      <CustomCursor />
       <Navbar />
 
       <main>

@@ -107,21 +107,5 @@ main {
   animation: meshDrift 12s infinite ease-in-out;
 }
 
-/* Custom Cursor */
-.cursor-dot {
-  @apply fixed w-1.5 h-1.5 bg-accent rounded-full pointer-events-none z-[9999];
-  transform: translate(-50%, -50%);
-}
 
-.cursor-ring {
-  @apply fixed w-6 h-6 border border-accent-light rounded-full pointer-events-none z-[9998] opacity-50;
-  transform: translate(-50%, -50%);
-  transition: width 0.3s, height 0.3s, opacity 0.3s;
-}
-
-@media (hover: none) {
-  .cursor-dot, .cursor-ring {
-    display: none;
-  }
-}
 
