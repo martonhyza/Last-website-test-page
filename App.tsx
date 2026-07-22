@@ -28,7 +28,7 @@ const PHRASES = [
   "responding to emergencies in 2 minutes",
   "turning missed calls into booked service jobs",
   "automating your follow-ups",
-  "making you the first electrician they call"
+  "making you the first roofer they call"
 ];
 
 // --- HOOKS ---
@@ -519,19 +519,19 @@ const Navbar = () => {
 // --- MAIN APP ---
 
 const SCENARIOS = {
-  emergency: [
-    { type: 'user', content: "Our master panel is buzzing and half our outlets just stopped working!" },
-    { type: 'ai', content: "Hi! I'm your AI assistant. That sounds like a potential electrical emergency. We can have an emergency technician out to your property within the hour. Can I get your address?" },
+  storm: [
+    { type: 'user', content: "My roof was hit by hail last night, it's leaking bad!" },
+    { type: 'ai', content: "Hi! I'm your AI assistant. We can have an emergency team out first thing tomorrow. Can I get your address?" },
     { type: 'user', content: "4521 Elm St, Columbus OH" },
-    { type: 'ai', content: "Perfect. I've dispatched an emergency technician to 4521 Elm St. They should arrive shortly. For your safety, please avoid touching the panel. Texting you live dispatch tracking now." }
+    { type: 'ai', content: "Perfect. I've scheduled you for an emergency inspection tomorrow at 8am. We handle the entire insurance claim for you. texting you our storm guide now." }
   ],
-  charger: [
-    { type: 'user', content: "Do you guys install EV wall connectors?" },
-    { type: 'ai', content: "Absolutely. We install Level 2 EV chargers, including Tesla wall connectors, ChargePoint, and generic home chargers. We handle the permit, load calculations, and install. Want to get a quick estimate?" }
+  insurance: [
+    { type: 'user', content: "Does my insurance cover this?" },
+    { type: 'ai', content: "If damage was caused by a storm, hail, or wind, your insurance typically covers roof replacement with only your deductible out of pocket. Want to schedule a free inspection to document the damage?" }
   ],
   cost: [
-    { type: 'user', content: "How much does a panel upgrade cost?" },
-    { type: 'ai', content: "A typical 200-amp panel upgrade runs between $2,500 and $4,500 depending on your home's setup and local utility requirements. Would you like us to schedule a free on-site consultation to give you an exact quote?" }
+    { type: 'user', content: "How much does a new roof cost?" },
+    { type: 'ai', content: "Roof costs vary based on size and materials — typically $8k–$18k for a standard home in Central Ohio. If damage is storm-related, insurance often covers most of it. Would you like a free inspection and estimate?" }
   ]
 };
 
@@ -553,9 +553,9 @@ function Home() {
   const typewriterText = useTypewriter(PHRASES);
 
   // --- STATE ---
-  const [activeScenario, setActiveScenario] = useState('emergency');
+  const [activeScenario, setActiveScenario] = useState('storm');
   const [missedLeads, setMissedLeads] = useState(5);
-  const [jobValue, setJobValue] = useState(4500);
+  const [jobValue, setJobValue] = useState(10000);
   const [closeRate, setCloseRate] = useState(25);
 
   const scrollToStrategy = () => {
@@ -591,7 +591,7 @@ function Home() {
                 className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-accent/10 border border-border-accent text-[11px] font-semibold text-accent-light tracking-widest uppercase mb-8"
               >
                 <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-                Built for Electrical Contractors
+                Built for Roofing Contractors
               </motion.div>
 
               <motion.h1 
@@ -600,7 +600,7 @@ function Home() {
                 transition={{ delay: 0.1 }}
                 className="text-4xl sm:text-5xl md:text-7xl font-display font-bold leading-tight mb-6"
               >
-                Stop Losing Electrical Jobs <br />
+                Stop Losing Roofing Jobs <br />
                 <span className="gradient-text">After Business Hours.</span>
               </motion.h1>
 
@@ -621,7 +621,7 @@ function Home() {
                 transition={{ delay: 0.3 }}
                 className="text-base md:text-lg text-text-muted leading-relaxed mb-10 max-w-xl"
               >
-                Every night, homeowners with emergency electrical outages and humming panels search for an electrician. They call the first one who responds. HyzaLabs builds the AI system that makes sure that's always you — even at 2am, even on weekends.
+                Every night, homeowners with storm-damaged roofs search for a roofer. They call the first one who responds. HyzaLabs builds the AI system that makes sure that's always you — even at 2am, even during a hailstorm.
               </motion.p>
 
               <motion.div 
@@ -666,16 +666,16 @@ function Home() {
                 <div className="bg-[#050510] rounded-xl overflow-hidden aspect-[4/5] p-4 md:p-6 flex flex-col gap-4">
                   <div className="flex flex-col gap-4">
                     <div className="self-start max-w-[80%] bg-bg-card border border-border p-3 rounded-2xl rounded-tl-none text-sm">
-                      Our house main panel is smoking and the power is half-out!
+                      My roof was hit by hail last night, it's leaking bad!
                     </div>
                     <div className="self-end max-w-[80%] bg-accent/20 border border-accent/30 p-3 rounded-2xl rounded-tr-none text-sm text-right">
-                      Hi! I'm your AI assistant. That sounds like a major emergency. We can have an emergency technician out in under 45 minutes. Can I get your address?
+                      Hi! I'm your AI assistant. We can have an emergency team out first thing tomorrow. Can I get your address?
                     </div>
                     <div className="self-start max-w-[80%] bg-bg-card border border-border p-3 rounded-2xl rounded-tl-none text-sm">
                       123 Oak St, Columbus OH
                     </div>
                     <div className="self-end max-w-[80%] bg-accent p-3 rounded-2xl rounded-tr-none text-sm text-right font-medium">
-                      Confirmed. We've dispatched an emergency technician to your address. Please keep away from the panel until they arrive!
+                      Confirmed. You're scheduled for 8am. I'm texting you our storm guide now!
                     </div>
                   </div>
                   
@@ -702,9 +702,9 @@ function Home() {
             </p>
             <div className="flex gap-4 items-center whitespace-nowrap animate-marquee">
               {[
-                "Apex Electrical Co.", "Volt Restoration", "Sparky Brothers", 
-                "Summit Power Partners", "Live-Wire Contractors", "Franklin County Electricians",
-                "Dustin Halsey Electrical", "Peak Electric", "The Panel Guys"
+                "Bronco Roofing", "Highbridge Restoration", "All Weather R&R", 
+                "Summit Roofing Co.", "Storm Shield Contractors", "Franklin County Roofing",
+                "Dustin Halsey R&R", "Peak Performers", "The Roof Guys"
               ].map((logo, i) => (
                 <div key={i} className="px-6 py-2 rounded-full bg-bg-card border border-border text-xs font-semibold text-text-muted">
                   {logo}
@@ -712,9 +712,9 @@ function Home() {
               ))}
               {/* Duplicate for infinite loop */}
               {[
-                "Apex Electrical Co.", "Volt Restoration", "Sparky Brothers", 
-                "Summit Power Partners", "Live-Wire Contractors", "Franklin County Electricians",
-                "Dustin Halsey Electrical", "Peak Electric", "The Panel Guys"
+                "Bronco Roofing", "Highbridge Restoration", "All Weather R&R", 
+                "Summit Roofing Co.", "Storm Shield Contractors", "Franklin County Roofing",
+                "Dustin Halsey R&R", "Peak Performers", "The Roof Guys"
               ].map((logo, i) => (
                 <div key={`dup-${i}`} className="px-6 py-2 rounded-full bg-bg-card border border-border text-xs font-semibold text-text-muted">
                   {logo}
@@ -728,7 +728,7 @@ function Home() {
         <section className="relative py-16 md:py-32 mesh-gradient overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10 text-center mb-12 md:mb-20">
             <Reveal>
-              <p className="text-[10px] font-bold text-accent-light uppercase tracking-[0.2em] md:tracking-[0.3em] mb-4 text-center">THE $4,500 PROBLEM HAPPENING EVERY NIGHT</p>
+              <p className="text-[10px] font-bold text-accent-light uppercase tracking-[0.2em] md:tracking-[0.3em] mb-4 text-center">THE $12,000 PROBLEM HAPPENING EVERY NIGHT</p>
               <h2 className="text-3xl md:text-5xl font-display font-bold mb-6">Right Now, A Homeowner Just <br className="hidden md:block" /> Chose Your Competitor.</h2>
             </Reveal>
           </div>
@@ -738,20 +738,20 @@ function Home() {
               {
                 label: "THE MOMENT",
                 icon: <Zap className="w-8 h-8 text-yellow-400 animate-pulse" />,
-                title: "11:47 PM — Panel Buzzer",
-                desc: "A power surge hits Franklin County. A homeowner hears their breaker panel buzzing, and half their lights go dead. They grab their phone and Google 'emergency electrician Columbus.'"
+                title: "11:47 PM — Hail hits",
+                desc: "A hailstorm hits Franklin County. A homeowner walks outside, sees their roof is damaged. They grab their phone and Google 'emergency roofer Columbus.'"
               },
               {
                 label: "THE CHOICE",
                 icon: <PhoneCall className="w-8 h-8 text-accent" />,
                 title: "They find 3 companies",
-                desc: "Two have contact forms or voicemail: 'We'll call you back on Monday.' The third has a chat widget that responds instantly and initiates active dispatch coordinates. They choose the third one."
+                desc: "Two have contact forms: 'We'll respond in 1-2 business days.' The third has a chat widget that responds instantly. They call the third one."
               },
               {
                 label: "THE COST",
                 icon: <BarChart3 className="w-8 h-8 text-red-400" />,
-                title: "Service call worth $4,500+",
-                desc: "The electrician who won it was asleep. Their AI wasn't. How many times did this happen last month while you were sleeping?"
+                title: "Job worth $14,500",
+                desc: "The roofer who won it was asleep. Their AI wasn't. How many times did this happen last month while you were sleeping?"
               }
             ].map((panel, i) => (
               <Reveal key={i} delay={i * 100}>
@@ -794,7 +794,7 @@ function Home() {
               {[
                 { value: 340, suffix: "%", label: "Average increase in captured leads within 60 days" },
                 { value: 2, suffix: " min", label: "Average AI response time (industry average: 14+ hours)" },
-                { value: 184000, prefix: "$", label: "Revenue generated for Bronco Electric in first 90 days" },
+                { value: 184000, prefix: "$", label: "Revenue generated for Bronco Roofing in first 90 days" },
                 { value: 0, label: "After-hours leads lost once the AI system is active" }
               ].map((stat, i) => (
                 <Reveal key={i} delay={i * 100}>
@@ -816,7 +816,7 @@ function Home() {
           <div className="max-w-7xl mx-auto px-6 mb-20 text-center">
             <Reveal>
               <p className="text-[10px] font-bold text-accent-light uppercase tracking-[0.3em] mb-4">WHAT WE BUILD FOR YOU</p>
-              <h2 className="text-4xl md:text-5xl font-display font-bold">Your Complete AI <br className="hidden md:block" /> System for Electricians</h2>
+              <h2 className="text-4xl md:text-5xl font-display font-bold">Your Complete AI <br className="hidden md:block" /> System for Roofing</h2>
             </Reveal>
           </div>
 
@@ -825,19 +825,19 @@ function Home() {
               {
                 icon: <MessageSquare className="w-8 h-8" />,
                 title: "24/7 AI CHATBOT",
-                desc: "Never miss a lead again. Your AI responds to every website visitor in under 2 minutes — day or night. Captures name, phone, address, and electrical issue details automatically while you sleep.",
+                desc: "Never miss a lead again. Your AI responds to every website visitor in under 2 minutes — day or night, storm or sunshine. Captures name, phone, address, and service needed before you wake up.",
                 tag: "Most Popular"
               },
               {
                 icon: <Zap className="w-8 h-8" />,
-                title: "EMERGENCY DISPATCH TRIGGER",
-                desc: "When storm blackouts or localized breaker emergencies strike, your AI automatically registers priority dispatches, updating your availability, notifying stand-by technicians, and routing urgent calls.",
+                title: "STORM ALERT ENGINE",
+                desc: "When hail hits your county, your AI automatically activates — sending messages to your lead list, updating your Google Business Profile, and routing emergency calls to the front of the queue.",
                 tag: "Highest ROI"
               },
               {
                 icon: <ClipboardCheck className="w-8 h-8" />,
-                title: "ESTIMATE & PERMIT WORKFLOW",
-                desc: "Follow up on electrical estimates automatically. Our AI answers questions on panel clearances, Tesla home wall chargers, or county code permits so clients book without delay.",
+                title: "INSURANCE AUTOMATION",
+                desc: "Follow up with every insurance lead automatically. Our AI knows what adjusters need, when to follow up, and how to keep the homeowner engaged through the entire 6-8 week claims process.",
                 tag: "Retention"
               },
               {
@@ -880,18 +880,18 @@ function Home() {
                       { 
                         step: "01", 
                         title: "We Audit Your Lead Gaps", 
-                        desc: "30-minute strategy call. We map every place you're losing leads: after-hours, emergencies, slow follow-up, low reviews. No sales pitch — just an honest gap analysis.",
+                        desc: "30-minute strategy call. We map every place you're losing leads: after-hours, storms, slow follow-up, low reviews. No sales pitch — just an honest gap analysis.",
                         sub: "Free. No commitment."
                       },
                       { 
                         step: "02", 
                         title: "We Build Your AI System", 
-                        desc: "Our team builds and connects everything: AI chatbot, emergency dispatch triggers, review system, and lead capture. We integrate with your existing tools.",
+                        desc: "Our team builds and connects everything: AI chatbot, storm alert triggers, review system, and lead capture. We integrate with your existing tools.",
                         sub: "Zero work required from you."
                       },
                       { 
                         step: "03", 
-                        title: "Leads Come In. You Focus on Electrical Work.", 
+                        title: "Leads Come In. You Focus on Roofing.", 
                         desc: "Your AI runs 24/7. We monitor, optimize, and send you a monthly report showing every lead captured, every job won from automation, and your ROI.",
                         sub: "Ongoing support included."
                       }
@@ -960,38 +960,38 @@ function Home() {
         <section id="case-studies" className="py-24 md:py-32">
           <div className="max-w-7xl mx-auto px-6 mb-20 text-center">
             <Reveal>
-              <p className="text-[10px] font-bold text-accent-light uppercase tracking-[0.3em] mb-4">REAL RESULTS. REAL ELECTRICIANS.</p>
-              <h2 className="text-4xl md:text-5xl font-display font-bold">What Happens When <br className="hidden md:block" /> Electrical Contractors Go AI-First</h2>
+              <p className="text-[10px] font-bold text-accent-light uppercase tracking-[0.3em] mb-4">REAL RESULTS. REAL ROOFERS.</p>
+              <h2 className="text-4xl md:text-5xl font-display font-bold">What Happens When <br className="hidden md:block" /> Roofing Contractors Go AI-First</h2>
             </Reveal>
           </div>
 
           <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-10">
             {[
               {
-                client: "VOLT ELECTRICAL",
+                client: "BRONCO ROOFING",
                 location: "Uniontown, OH",
                 owner: "Dustin Halsey, Owner · Summit County",
-                challenge: "23 Google reviews. No after-hours capture. Losing 3–5 emergency calls per week to competitors after 6pm.",
-                solution: "HyzaLabs AI chatbot + emergency dispatch automation + review automation",
+                challenge: "23 Google reviews. No after-hours capture. Losing 3–5 leads per week to competitors after 6pm.",
+                solution: "HyzaLabs AI chatbot + storm alert system + review automation",
                 stats: [
                   { value: 23, label: "leads in first 30 days" },
                   { value: 184000, prefix: "$", label: "booked jobs (90 days)" },
                   { value: 67, label: "Google reviews (from 23)" }
                 ],
-                quote: "The AI responded to a residential power outage at 2am and dispatched the technician before I even had my morning coffee."
+                quote: "The AI responded to a storm damage inquiry at 2am and booked the inspection before I had my morning coffee."
               },
               {
-                client: "SUMMIT ELECTRIC",
+                client: "HIGHBRIDGE RESTORATION",
                 location: "Akron, OH",
-                owner: "Michael Fondas, Owner · Master Electrician",
-                challenge: "Legacy template website. Single page despite offering 50+ commercial or residential electrical services. Zero digital lead capture.",
-                solution: "Full HyzaLabs AI system + EV charger follow-up automation + web overhaul",
+                owner: "Michael Fondas, Owner · GAF + CertainTeed",
+                challenge: "Hibu template website. Positioned as just a roofer despite 50+ services. Zero digital lead capture.",
+                solution: "Full HyzaLabs AI system + insurance claim automation + website overhaul",
                 stats: [
                   { value: 290, suffix: "%", label: "increase in service leads" },
-                  { value: 8, suffix: "/mo", label: "EV charger installations" },
-                  { value: 100, suffix: "%", label: "Client follow-ups automated" }
+                  { value: 8, suffix: "/mo", label: "kitchen remodel leads" },
+                  { value: 100, suffix: "%", label: "Insurance follow-up automated" }
                 ],
-                quote: "The AI easily answers customer technical questions about electrical panels, level-2 chargers, and code clearances instantly."
+                quote: "I didn't realize how much revenue I was leaving on the table until HyzaLabs showed me the math."
               }
             ].map((study, i) => (
               <Reveal key={i} delay={i * 100}>
@@ -1050,9 +1050,9 @@ function Home() {
               
               <div className="flex flex-col gap-3 max-w-md mx-auto md:mx-0">
                 {[
-                  { icon: "⚡", label: "Emergency Outage Inquiry", key: "emergency" },
-                  { icon: "🔌", label: "EV Charger Installation", key: "charger" },
-                  { icon: "❓", label: "How Much Is a Panel Upgrade?", key: "cost" }
+                  { icon: "🌩️", label: "Storm Damage Inquiry", key: "storm" },
+                  { icon: "💰", label: "Insurance Question", key: "insurance" },
+                  { icon: "❓", label: "How Much Does a Roof Cost?", key: "cost" }
                 ].map((scenario) => (
                   <button 
                     key={scenario.key}
@@ -1075,7 +1075,7 @@ function Home() {
                        <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-accent text-xs font-bold">AI</div>
                           <div>
-                            <div className="text-xs font-bold">Electrical Expert AI</div>
+                            <div className="text-xs font-bold">Roofing Expert AI</div>
                             <div className="text-[10px] text-green-500 font-bold uppercase tracking-wider">Online Now</div>
                           </div>
                        </div>
@@ -1155,7 +1155,7 @@ function Home() {
                           <span className="font-mono text-accent-light text-lg">${jobValue.toLocaleString()}</span>
                        </div>
                        <input 
-                         type="range" min="1000" max="15000" step="250"
+                         type="range" min="3000" max="30000" step="500"
                          value={jobValue} 
                          onChange={(e) => setJobValue(parseInt(e.target.value))}
                          className="w-full accent-accent h-1.5 bg-bg-card rounded-full appearance-none cursor-pointer"
@@ -1204,13 +1204,13 @@ function Home() {
            <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-20 items-center">
               <Reveal>
                  <p className="text-[10px] font-bold text-accent-light uppercase tracking-[0.3em] mb-4">OUR FOCUS</p>
-                 <h2 className="text-4xl md:text-5xl font-display font-bold mb-8">We Don't Do Everything. <br /> We Do Electrical.</h2>
+                 <h2 className="text-4xl md:text-5xl font-display font-bold mb-8">We Don't Do Everything. <br /> We Do Roofing.</h2>
                  <div className="space-y-6 text-text-muted leading-relaxed">
                     <p>
-                      Most AI agencies sell generic chatbots to anyone who will pay. We made a different choice. We went deep on one industry — electrical contracting — and learned everything: emergency outage dynamics, panel load calculations, EV charger installation permits, standby generator wiring, and how homeowners choose an electrician at midnight when half their house loses power.
+                      Most AI agencies sell generic chatbots to anyone who will pay. We made a different choice. We went deep on one industry — roofing — and learned everything: storm seasons, hail maps, insurance claim timelines, GAF certifications, and how homeowners choose a roofer at 11pm.
                     </p>
                     <p>
-                      We know the difference between a double-pole breaker and a GFCI outlet. We know what 'load-balancing' means to a busy electrical contractor. And we've built our AI systems around all of it.
+                      We know the difference between a Timberline HDZ and an Owens Corning Duration. We know what 'storm chaser' means to a reputable contractor. And we've built our AI systems around all of it.
                     </p>
                  </div>
               </Reveal>
@@ -1219,15 +1219,15 @@ function Home() {
                  <TiltCard className="p-8">
                     <h4 className="text-sm font-bold mb-8 flex items-center gap-2">
                        <BarChart3 className="w-5 h-5 text-accent" />
-                       Peak Seasonal Load & Outage Volume — Central Ohio
+                       Storm Season Lead Volume — Central Ohio
                     </h4>
                     <div className="flex items-end justify-between h-48 gap-2">
                        {[
                          { month: "J-F", h: "20%" },
                          { month: "M-A", h: "45%" },
-                         { month: "M-J", h: "100%", label: "Grid Overloads", glow: true },
+                         { month: "M-J", h: "100%", label: "Hail Season", glow: true },
                          { month: "J-A", h: "75%" },
-                         { month: "S-O", h: "90%", label: "Storm Outages", glow: true },
+                         { month: "S-O", h: "90%", label: "Wind Season", glow: true },
                          { month: "N-D", h: "35%" }
                        ].map((bar, i) => (
                          <div key={i} className="flex-grow flex flex-col items-center">
@@ -1248,7 +1248,7 @@ function Home() {
                        ))}
                     </div>
                     <p className="mt-8 text-[10px] text-text-muted text-center italic">
-                      Our outage detection system is calibrated to Central Ohio grid demands and local weather patterns — automatically.
+                      Our storm alert system is calibrated to Central Ohio and NE Ohio weather patterns — automatically.
                     </p>
                  </TiltCard>
               </Reveal>
@@ -1370,13 +1370,13 @@ function Home() {
                       </div>
                       <div className="space-y-1.5">
                         <label className="text-[10px] font-bold uppercase text-text-muted tracking-widest">Business Name</label>
-                        <input name="businessName" type="text" required placeholder="Volt Electrical" className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-accent outline-none transition-all" />
+                        <input name="businessName" type="text" required placeholder="Summit Roofing" className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-accent outline-none transition-all" />
                       </div>
                     </div>
 
                     <div className="space-y-1.5">
                       <label className="text-[10px] font-bold uppercase text-text-muted tracking-widest">Business Address</label>
-                      <input name="address" type="text" required placeholder="123 Sparky Lane, Dallas, TX" className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-accent outline-none transition-all" />
+                      <input name="address" type="text" required placeholder="123 Roofing Ave, Dallas, TX" className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm focus:border-accent outline-none transition-all" />
                     </div>
 
                     <div className="space-y-1.5">
@@ -1417,7 +1417,7 @@ function Home() {
                     <span className="text-xl font-display font-bold tracking-tight">HyzaLabs</span>
                  </div>
                </a>
-               <p className="text-sm text-text-muted mb-4">Strategic AI for Electrical Contractors</p>
+               <p className="text-sm text-text-muted mb-4">Strategic AI for Roofing Contractors</p>
                <a href="mailto:info@hyzalabs.com" className="text-sm font-bold text-accent-light hover:underline">info@hyzalabs.com</a>
             </div>
             
@@ -1426,8 +1426,8 @@ function Home() {
                 title: "Services", 
                 links: [
                   { name: "AI Chatbot", id: "services" },
-                  { name: "Emergency Dispatch", id: "services" },
-                  { name: "Estimate Workflow", id: "services" },
+                  { name: "Storm Alert", id: "services" },
+                  { name: "Insurance Automation", id: "services" },
                   { name: "Review Growth", id: "services" }
                 ] 
               },
@@ -1444,7 +1444,7 @@ function Home() {
                 title: "Resources", 
                 links: [
                   { name: "Lead Loss Calculator", id: "how-it-works" },
-                  { name: "Outage Demand Guide", id: "how-it-works" },
+                  { name: "Storm Season Guide", id: "how-it-works" },
                   { name: "Book a Call", id: "strategy" }
                 ] 
               }
