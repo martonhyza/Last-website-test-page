@@ -116,6 +116,9 @@ function useNeuralNetwork(canvasRef: React.RefObject<HTMLCanvasElement | null>) 
     };
 
     const animate = () => {
+      animationFrameId = requestAnimationFrame(animate);
+      if (window.innerWidth < 768) return;
+
       ctx.clearRect(0, 0, width, height);
       particles.forEach(p => {
         p.update();
@@ -138,8 +141,6 @@ function useNeuralNetwork(canvasRef: React.RefObject<HTMLCanvasElement | null>) 
           }
         }
       }
-
-      animationFrameId = requestAnimationFrame(animate);
     };
 
     const handleMouseMove = (e: MouseEvent) => {
@@ -581,7 +582,7 @@ function Home() {
       <main>
         {/* --- HERO SECTION --- */}
         <section className="relative min-h-screen flex items-center justify-center pt-36 md:pt-48 overflow-hidden">
-          <canvas ref={canvasRef} className="absolute inset-0 z-0 pointer-events-none" />
+          <canvas ref={canvasRef} className="hidden md:block absolute inset-0 z-0 pointer-events-none" />
           
           <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 grid md:grid-cols-2 gap-12 items-center">
             <div>
